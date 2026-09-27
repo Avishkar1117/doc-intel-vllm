@@ -1,0 +1,64 @@
+{
+  "image_id": 54,
+  "raw_ground_truth": {
+    "menu": {
+      "nm": "KACANG MERAH",
+      "price": "10,000"
+    },
+    "sub_total": {
+      "subtotal_price": "10,000"
+    },
+    "total": {
+      "total_price": "10,000",
+      "cashprice": "10,000"
+    }
+  },
+  "prediction": {
+    "data": {
+      "line_items": [
+        {
+          "name": "KACANG MERAH",
+          "count": 1.0,
+          "unit_price": 10000.0,
+          "price": 10000.0,
+          "discount_price": 0.0
+        },
+        {
+          "name": "KACANG MERAH",
+          "count": 1.0,
+          "unit_price": 10000.0,
+          "price": 10000.0,
+          "discount_price": 0.0
+        }
+      ],
+      "subtotals": {
+        "subtotal": 20000.0,
+        "discount": 0.0,
+        "service_charge": 0.0,
+        "other_service_charge": 0.0,
+        "tax": 0.0
+      },
+      "totals": {
+        "total": 20000.0,
+        "cash_paid": 20000.0,
+        "change_due": 0.0,
+        "credit_card_paid": 0.0,
+        "emoney_paid": 0.0,
+        "menu_type_count": 1,
+        "menu_quantity_count": 2
+      }
+    },
+    "validation": {
+      "passed": true,
+      "errors": null,
+      "repair_attempts": 2
+    },
+    "usage": {
+      "prompt_tokens": 1405,
+      "completion_tokens": 243,
+      "visual_tokens": 0,
+      "total_tokens": 1648
+    },
+    "latency_ms": 25756.044300000212
+  }
+}

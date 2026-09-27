@@ -1,0 +1,7 @@
+{
+  "tag": "2b_cap1500k",
+  "model": "Qwen/Qwen3-VL-2B-Instruct",
+  "mm_processor_kwargs": "{\"size\": {\"longest_edge\": 1500000, \"shortest_edge\": 65536}}",
+  "vllm_version": "0.21.0",
+  "mean_visual_tokens": 968.1313131313132
+}

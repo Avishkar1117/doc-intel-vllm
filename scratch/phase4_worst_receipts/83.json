@@ -1,0 +1,61 @@
+{
+  "image_id": 83,
+  "raw_ground_truth": {
+    "menu": {
+      "nm": "COOKIES AND CREAM",
+      "cnt": "1",
+      "price": "20,909"
+    },
+    "sub_total": {
+      "subtotal_price": "20,909",
+      "tax_price": "2,091"
+    },
+    "total": {
+      "total_price": "23,000",
+      "cashprice": "25.000",
+      "changeprice": "2.000",
+      "menuqty_cnt": "1"
+    }
+  },
+  "prediction": {
+    "data": {
+      "line_items": [
+        {
+          "name": "1 COOKIES AND CREAM",
+          "count": 1.0,
+          "unit_price": 20909.0,
+          "price": 20909.0,
+          "discount_price": 0.0
+        }
+      ],
+      "subtotals": {
+        "subtotal": 20909.0,
+        "discount": 0.0,
+        "service_charge": 0.0,
+        "other_service_charge": 0.0,
+        "tax": 2091.0
+      },
+      "totals": {
+        "total": 23000.0,
+        "cash_paid": null,
+        "change_due": null,
+        "credit_card_paid": null,
+        "emoney_paid": null,
+        "menu_type_count": null,
+        "menu_quantity_count": null
+      }
+    },
+    "validation": {
+      "passed": true,
+      "errors": null,
+      "repair_attempts": 1
+    },
+    "usage": {
+      "prompt_tokens": 1280,
+      "completion_tokens": 189,
+      "visual_tokens": 0,
+      "total_tokens": 1469
+    },
+    "latency_ms": 13933.691100000942
+  }
+}

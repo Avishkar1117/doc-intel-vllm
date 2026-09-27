@@ -1,0 +1,1 @@
+# .github/workflows/deploy.yml — build -> Azure Container Registry -> Container Apps. Filled in Phase 7 (Azure deployment, Tier 2 — Claude Code writes directly).

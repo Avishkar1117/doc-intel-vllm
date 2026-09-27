@@ -1,0 +1,90 @@
+{
+  "image_id": 26,
+  "raw_ground_truth": {
+    "menu": [
+      {
+        "nm": "Nasi Cap Cay Porsi B esar",
+        "unitprice": "65.000",
+        "cnt": "1",
+        "price": "65.000",
+        "etc": "Cap Cay"
+      },
+      {
+        "nm": "Teh Tawar",
+        "unitprice": "4.000",
+        "cnt": "2",
+        "etc": "Minuman"
+      },
+      {
+        "nm": "Fu Yung Hai",
+        "unitprice": "65.000",
+        "cnt": "1",
+        "price": "65.000",
+        "etc": "Lain-lain"
+      }
+    ],
+    "sub_total": {
+      "subtotal_price": "Rp 138.000"
+    },
+    "total": {
+      "total_price": "Rp 138.000",
+      "cashprice": "Rp 138.000",
+      "changeprice": "Rp 0"
+    }
+  },
+  "prediction": {
+    "data": {
+      "line_items": [
+        {
+          "name": "Cap Cay",
+          "count": 1.0,
+          "unit_price": 65000.0,
+          "price": 65000.0,
+          "discount_price": null
+        },
+        {
+          "name": "Minuman",
+          "count": 2.0,
+          "unit_price": 2000.0,
+          "price": 4000.0,
+          "discount_price": null
+        },
+        {
+          "name": "Lain-lain",
+          "count": 1.0,
+          "unit_price": 65000.0,
+          "price": 65000.0,
+          "discount_price": null
+        }
+      ],
+      "subtotals": {
+        "subtotal": 134000.0,
+        "discount": null,
+        "service_charge": null,
+        "other_service_charge": null,
+        "tax": null
+      },
+      "totals": {
+        "total": 134000.0,
+        "cash_paid": 134000.0,
+        "change_due": 0.0,
+        "credit_card_paid": null,
+        "emoney_paid": null,
+        "menu_type_count": null,
+        "menu_quantity_count": null
+      }
+    },
+    "validation": {
+      "passed": true,
+      "errors": null,
+      "repair_attempts": 1
+    },
+    "usage": {
+      "prompt_tokens": 1237,
+      "completion_tokens": 277,
+      "visual_tokens": 0,
+      "total_tokens": 1514
+    },
+    "latency_ms": 21424.48279999917
+  }
+}

@@ -1,0 +1,49 @@
+# .github/workflows/ci.yml — lint (ruff) + types (mypy --strict) + unit tests.
+# No GPU anywhere in this workflow - DOCINTEL_BACKEND defaults to "mock" (config.py), so
+# the whole suite, including the api.py integration test, runs on GitHub's own runners.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Pinned to match local dev / Dockerfile.api (checked via `uv --version`, not assumed).
+      - uses: astral-sh/setup-uv@v5
+        with:
+          version: "0.11.14"
+
+      - name: Install dependencies
+        run: uv sync --locked --extra dev
+
+      - name: Lint (ruff)
+        # Scoped to src/tests, not the whole repo: modal_app.py and benchmarks/*.py are
+        # Tier 1 (CLAUDE.md) with content Avishkar hasn't finished typing in yet across
+        # their own phases (1, 5, 6) - gating every future PR on unfinished Tier-1 files
+        # would block src/ changes for reasons unrelated to them. scratch/ is a throwaway
+        # debug harness, excluded the same way it's excluded from Dockerfile.api's build
+        # context (.dockerignore).
+        run: uv run ruff check src tests
+
+      - name: Type check (mypy --strict)
+        # explicit-package-bases + MYPYPATH: src/docintel isn't a namespace package mypy
+        # can resolve from pyproject.toml alone yet (flagged in PHASE_LOG.md's Phase 2
+        # entry as a pending pyproject.toml change - Tier 1, not applied here).
+        # benchmarks + tests added in Phase 5: tests/test_benchmark.py imports benchmark.py
+        # and stub_vllm_server.py directly (conftest.py's sys.path trick is runtime-only,
+        # invisible to mypy's static resolution). Both entries are needed, not just
+        # benchmarks: without tests on MYPYPATH too, mypy names tests/*.py "tests.xxx"
+        # (root-relative to cwd, since "tests" itself isn't yet a search-path root) instead
+        # of the bare "stub_vllm_server" the import expects - confirmed by testing both
+        # ways locally. This only widens where mypy may resolve imports *from*; it does not
+        # add benchmarks/*.py to the files being *checked*.
+        run: MYPYPATH=src:benchmarks:tests uv run mypy --strict --explicit-package-bases src tests
+
+      - name: Test (pytest)
+        run: uv run pytest -v

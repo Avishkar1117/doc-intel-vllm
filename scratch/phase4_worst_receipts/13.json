@@ -1,0 +1,79 @@
+{
+  "image_id": 13,
+  "raw_ground_truth": {
+    "menu": [
+      {
+        "nm": "BASO KUAH",
+        "unitprice": "43.636",
+        "cnt": "1",
+        "price": "43.636"
+      },
+      {
+        "nm": "A.MINERAL GELAS",
+        "unitprice": "3,000",
+        "cnt": "1",
+        "price": "3,000"
+      }
+    ],
+    "sub_total": {
+      "subtotal_price": [
+        "46.636",
+        "46.636"
+      ],
+      "tax_price": "4.664"
+    },
+    "total": {
+      "total_price": "51.300",
+      "cashprice": "52.000",
+      "changeprice": "700"
+    }
+  },
+  "prediction": {
+    "data": {
+      "line_items": [
+        {
+          "name": "BASO KLUH",
+          "count": 1.0,
+          "unit_price": 43.636,
+          "price": 43.636,
+          "discount_price": null
+        },
+        {
+          "name": "A.MINERAL GELAS",
+          "count": 1.0,
+          "unit_price": 3.0,
+          "price": 3.0,
+          "discount_price": null
+        }
+      ],
+      "subtotals": {
+        "subtotal": 46.636,
+        "discount": null,
+        "service_charge": null,
+        "other_service_charge": null,
+        "tax": 4.664
+      },
+      "totals": {
+        "total": 51.3,
+        "cash_paid": 52.0,
+        "change_due": null,
+        "credit_card_paid": null,
+        "emoney_paid": null,
+        "menu_type_count": null,
+        "menu_quantity_count": null
+      }
+    },
+    "validation": {
+      "passed": true,
+      "errors": null,
+      "repair_attempts": 0
+    },
+    "usage": {
+      "prompt_tokens": 2242,
+      "completion_tokens": 234,
+      "visual_tokens": 0,
+      "total_tokens": 2476
+    },
+    "latency_ms": 9922.346000001198
+  }
+}

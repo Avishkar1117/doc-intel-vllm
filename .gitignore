@@ -1,0 +1,25 @@
+# Local environments and caches, not portable across machines.
+.venv/
+__pycache__/
+*.pyc
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+
+# CORD/SROIE datasets: large, public, and re-downloadable - not original work.
+data/
+
+# Secrets and machine-specific overrides. Real config comes from env vars / Azure
+# Key Vault (Phase 7), never a committed file.
+.env
+.env.*
+
+# Claude Code's own local session state, not project content.
+.claude/
+
+# Personal working/study notes, kept locally, not part of the public repo.
+/CLAUDE.md
+/PROJECT_BRIEF.md
+/DECISIONS.md
+/PHASE_LOG.md
+/FUTURE.md

@@ -1,0 +1,292 @@
+1 config(s), est. ~$0.53 of GPU. Proceed? [y/N] C:\Users\avish\Desktop\doc_int-vLLM\.venv\Lib\site-packages\modal\_utils\async_utils.py:43: DeprecationWarning: 'asyncio.WindowsSelectorEventLoopPolicy' is deprecated and slated for removal in Python 3.16
+  asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+C:\Users\avish\Desktop\doc_int-vLLM\.venv\Lib\site-packages\modal\_utils\async_utils.py:43: DeprecationWarning: 'asyncio.set_event_loop_policy' is deprecated and slated for removal in Python 3.16
+  asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+App is already stopped. (Stopped at 2026-09-26 16:26:25+02:00 by 'avishkarpotale').
+C:\Users\avish\Desktop\doc_int-vLLM\.venv\Lib\site-packages\modal\_utils\async_utils.py:43: DeprecationWarning: 'asyncio.WindowsSelectorEventLoopPolicy' is deprecated and slated for removal in Python 3.16
+  asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+C:\Users\avish\Desktop\doc_int-vLLM\.venv\Lib\site-packages\modal\_utils\async_utils.py:43: DeprecationWarning: 'asyncio.set_event_loop_policy' is deprecated and slated for removal in Python 3.16
+  asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+✓ Created objects.
+├── 🔨 Created mount C:\Users\avish\Desktop\doc_int-vLLM\modal_app.py
+├── 🔨 Created function Server.
+└── 🔨 Created flash service endpoint for Server => 
+    https://avishkarpotale--vllm-doc-intelligence-server.us-east.modal.direct
+✓ App deployed in 2.856s! 🎉
+
+View Deployment: 
+https://modal.com/apps/avishkarpotale/main/deployed/vllm-doc-intelligence
+2026-09-26 17:43:37 [info     ] capture_waiting_for_healthy    base_url=https://avishkarpotale--vllm-doc-intelligence-server.us-east.modal.direct
+2026-09-26 17:47:57 [debug    ] vllm_completion                completion_tokens=176 prompt_tokens=1676
+2026-09-26 17:48:03 [debug    ] vllm_completion                completion_tokens=176 prompt_tokens=533
+2026-09-26 17:48:10 [debug    ] vllm_completion                completion_tokens=176 prompt_tokens=533
+2026-09-26 17:48:10 [info     ] capture_ok                     image_id=0 validation_passed=False
+2026-09-26 17:48:21 [debug    ] vllm_completion                completion_tokens=266 prompt_tokens=2596
+2026-09-26 17:48:21 [info     ] capture_ok                     image_id=1 validation_passed=True
+2026-09-26 17:48:30 [debug    ] vllm_completion                completion_tokens=240 prompt_tokens=2476
+2026-09-26 17:48:30 [info     ] capture_ok                     image_id=2 validation_passed=True
+2026-09-26 17:48:38 [debug    ] vllm_completion                completion_tokens=172 prompt_tokens=2476
+2026-09-26 17:48:38 [info     ] capture_ok                     image_id=3 validation_passed=True
+2026-09-26 17:48:49 [debug    ] vllm_completion                completion_tokens=284 prompt_tokens=2476
+2026-09-26 17:49:00 [debug    ] vllm_completion                completion_tokens=284 prompt_tokens=1444
+2026-09-26 17:49:11 [debug    ] vllm_completion                completion_tokens=284 prompt_tokens=1444
+2026-09-26 17:49:11 [info     ] capture_ok                     image_id=4 validation_passed=False
+2026-09-26 17:49:26 [debug    ] vllm_completion                completion_tokens=128 prompt_tokens=10612
+2026-09-26 17:49:51 [debug    ] vllm_completion                completion_tokens=470 prompt_tokens=9421
+2026-09-26 17:50:15 [debug    ] vllm_completion                completion_tokens=451 prompt_tokens=9754
+2026-09-26 17:50:16 [info     ] capture_ok                     image_id=5 validation_passed=False
+2026-09-26 17:50:27 [debug    ] vllm_completion                completion_tokens=284 prompt_tokens=2476
+2026-09-26 17:50:27 [info     ] capture_ok                     image_id=6 validation_passed=True
+2026-09-26 17:50:33 [debug    ] vllm_completion                completion_tokens=136 prompt_tokens=1882
+2026-09-26 17:50:39 [debug    ] vllm_completion                completion_tokens=136 prompt_tokens=700
+2026-09-26 17:50:44 [debug    ] vllm_completion                completion_tokens=136 prompt_tokens=700
+2026-09-26 17:50:44 [info     ] capture_ok                     image_id=7 validation_passed=False
+2026-09-26 17:50:55 [debug    ] vllm_completion                completion_tokens=270 prompt_tokens=2476
+2026-09-26 17:50:55 [info     ] capture_ok                     image_id=8 validation_passed=True
+2026-09-26 17:51:03 [debug    ] vllm_completion                completion_tokens=181 prompt_tokens=1882
+2026-09-26 17:51:03 [info     ] capture_ok                     image_id=9 validation_passed=True
+2026-09-26 17:51:10 [debug    ] vllm_completion                completion_tokens=180 prompt_tokens=1882
+2026-09-26 17:51:10 [info     ] capture_ok                     image_id=10 validation_passed=True
+2026-09-26 17:51:17 [debug    ] vllm_completion                completion_tokens=183 prompt_tokens=1882
+2026-09-26 17:51:17 [info     ] capture_ok                     image_id=11 validation_passed=True
+2026-09-26 17:51:26 [debug    ] vllm_completion                completion_tokens=232 prompt_tokens=1882
+2026-09-26 17:51:26 [info     ] capture_ok                     image_id=12 validation_passed=True
+2026-09-26 17:51:34 [debug    ] vllm_completion                completion_tokens=188 prompt_tokens=2476
+2026-09-26 17:51:34 [info     ] capture_ok                     image_id=13 validation_passed=True
+2026-09-26 17:51:56 [debug    ] vllm_completion                completion_tokens=451 prompt_tokens=7210
+2026-09-26 17:51:56 [info     ] capture_ok                     image_id=14 validation_passed=True
+2026-09-26 17:52:05 [debug    ] vllm_completion                completion_tokens=232 prompt_tokens=1882
+2026-09-26 17:52:05 [info     ] capture_ok                     image_id=15 validation_passed=True
+2026-09-26 17:52:16 [debug    ] vllm_completion                completion_tokens=283 prompt_tokens=2476
+2026-09-26 17:52:16 [info     ] capture_ok                     image_id=16 validation_passed=True
+2026-09-26 17:52:29 [debug    ] vllm_completion                completion_tokens=316 prompt_tokens=2596
+2026-09-26 17:52:41 [debug    ] vllm_completion                completion_tokens=316 prompt_tokens=1594
+2026-09-26 17:52:41 [info     ] capture_ok                     image_id=17 validation_passed=True
+2026-09-26 17:52:48 [debug    ] vllm_completion                completion_tokens=176 prompt_tokens=1882
+2026-09-26 17:52:48 [info     ] capture_ok                     image_id=18 validation_passed=True
+2026-09-26 17:52:53 [debug    ] vllm_completion                completion_tokens=120 prompt_tokens=1882
+2026-09-26 17:53:02 [debug    ] vllm_completion                completion_tokens=252 prompt_tokens=685
+2026-09-26 17:53:12 [debug    ] vllm_completion                completion_tokens=248 prompt_tokens=820
+2026-09-26 17:53:12 [info     ] capture_ok                     image_id=19 validation_passed=False
+2026-09-26 17:53:26 [debug    ] vllm_completion                completion_tokens=356 prompt_tokens=2476
+2026-09-26 17:53:26 [info     ] capture_ok                     image_id=20 validation_passed=True
+2026-09-26 17:53:36 [debug    ] vllm_completion                completion_tokens=237 prompt_tokens=2596
+2026-09-26 17:53:36 [info     ] capture_ok                     image_id=21 validation_passed=True
+2026-09-26 17:53:45 [debug    ] vllm_completion                completion_tokens=231 prompt_tokens=2476
+2026-09-26 17:53:45 [info     ] capture_ok                     image_id=22 validation_passed=True
+2026-09-26 17:53:54 [debug    ] vllm_completion                completion_tokens=223 prompt_tokens=2476
+2026-09-26 17:53:54 [info     ] capture_ok                     image_id=23 validation_passed=True
+2026-09-26 17:54:05 [debug    ] vllm_completion                completion_tokens=276 prompt_tokens=1882
+2026-09-26 17:54:05 [info     ] capture_ok                     image_id=24 validation_passed=True
+2026-09-26 17:54:16 [debug    ] vllm_completion                completion_tokens=279 prompt_tokens=2476
+2026-09-26 17:54:16 [info     ] capture_ok                     image_id=25 validation_passed=True
+2026-09-26 17:54:26 [debug    ] vllm_completion                completion_tokens=263 prompt_tokens=2276
+2026-09-26 17:54:26 [info     ] capture_ok                     image_id=26 validation_passed=True
+2026-09-26 17:54:36 [debug    ] vllm_completion                completion_tokens=231 prompt_tokens=2476
+2026-09-26 17:54:36 [info     ] capture_ok                     image_id=27 validation_passed=True
+2026-09-26 17:54:48 [debug    ] vllm_completion                completion_tokens=276 prompt_tokens=3340
+2026-09-26 17:55:01 [debug    ] vllm_completion                completion_tokens=293 prompt_tokens=2300
+2026-09-26 17:55:14 [debug    ] vllm_completion                completion_tokens=293 prompt_tokens=2317
+2026-09-26 17:55:14 [info     ] capture_ok                     image_id=28 validation_passed=False
+2026-09-26 17:55:32 [debug    ] vllm_completion                completion_tokens=452 prompt_tokens=2476
+2026-09-26 17:55:32 [info     ] capture_ok                     image_id=29 validation_passed=True
+2026-09-26 17:55:38 [debug    ] vllm_completion                completion_tokens=133 prompt_tokens=2476
+2026-09-26 17:55:44 [debug    ] vllm_completion                completion_tokens=133 prompt_tokens=1290
+2026-09-26 17:55:50 [debug    ] vllm_completion                completion_tokens=133 prompt_tokens=1290
+2026-09-26 17:55:50 [info     ] capture_ok                     image_id=30 validation_passed=False
+2026-09-26 17:56:07 [debug    ] vllm_completion                completion_tokens=115 prompt_tokens=10612
+2026-09-26 17:56:23 [debug    ] vllm_completion                completion_tokens=201 prompt_tokens=9406
+2026-09-26 17:56:39 [debug    ] vllm_completion                completion_tokens=198 prompt_tokens=9496
+2026-09-26 17:56:39 [info     ] capture_ok                     image_id=31 validation_passed=False
+2026-09-26 17:56:53 [debug    ] vllm_completion                completion_tokens=185 prompt_tokens=7210
+2026-09-26 17:56:53 [info     ] capture_ok                     image_id=32 validation_passed=True
+2026-09-26 17:57:02 [debug    ] vllm_completion                completion_tokens=245 prompt_tokens=1882
+2026-09-26 17:57:11 [debug    ] vllm_completion                completion_tokens=250 prompt_tokens=810
+2026-09-26 17:57:21 [debug    ] vllm_completion                completion_tokens=250 prompt_tokens=815
+2026-09-26 17:57:21 [info     ] capture_ok                     image_id=33 validation_passed=False
+2026-09-26 17:57:29 [debug    ] vllm_completion                completion_tokens=230 prompt_tokens=1596
+2026-09-26 17:57:29 [info     ] capture_ok                     image_id=34 validation_passed=True
+2026-09-26 17:57:42 [debug    ] vllm_completion                completion_tokens=324 prompt_tokens=2476
+2026-09-26 17:57:42 [info     ] capture_ok                     image_id=35 validation_passed=True
+2026-09-26 17:58:02 [debug    ] vllm_completion                completion_tokens=244 prompt_tokens=10612
+2026-09-26 17:58:02 [info     ] capture_ok                     image_id=36 validation_passed=True
+2026-09-26 17:58:09 [debug    ] vllm_completion                completion_tokens=178 prompt_tokens=1882
+2026-09-26 17:58:09 [info     ] capture_ok                     image_id=37 validation_passed=True
+2026-09-26 17:58:42 [debug    ] vllm_completion                completion_tokens=510 prompt_tokens=10612
+2026-09-26 17:59:13 [debug    ] vllm_completion                completion_tokens=552 prompt_tokens=9806
+2026-09-26 17:59:44 [debug    ] vllm_completion                completion_tokens=552 prompt_tokens=9848
+2026-09-26 17:59:44 [info     ] capture_ok                     image_id=38 validation_passed=False
+2026-09-26 17:59:58 [debug    ] vllm_completion                completion_tokens=347 prompt_tokens=2476
+2026-09-26 18:00:11 [debug    ] vllm_completion                completion_tokens=366 prompt_tokens=1509
+2026-09-26 18:00:26 [debug    ] vllm_completion                completion_tokens=366 prompt_tokens=1528
+2026-09-26 18:00:26 [info     ] capture_ok                     image_id=39 validation_passed=False
+2026-09-26 18:00:35 [debug    ] vllm_completion                completion_tokens=251 prompt_tokens=1676
+2026-09-26 18:00:35 [info     ] capture_ok                     image_id=40 validation_passed=True
+2026-09-26 18:00:53 [debug    ] vllm_completion                completion_tokens=505 prompt_tokens=2116
+2026-09-26 18:01:11 [debug    ] vllm_completion                completion_tokens=505 prompt_tokens=1306
+2026-09-26 18:01:29 [debug    ] vllm_completion                completion_tokens=505 prompt_tokens=1306
+2026-09-26 18:01:30 [info     ] capture_ok                     image_id=41 validation_passed=False
+2026-09-26 18:01:43 [debug    ] vllm_completion                completion_tokens=187 prompt_tokens=7210
+2026-09-26 18:01:43 [info     ] capture_ok                     image_id=42 validation_passed=True
+2026-09-26 18:02:00 [debug    ] vllm_completion                completion_tokens=185 prompt_tokens=10612
+2026-09-26 18:02:16 [debug    ] vllm_completion                completion_tokens=204 prompt_tokens=9481
+2026-09-26 18:02:16 [info     ] capture_ok                     image_id=43 validation_passed=True
+2026-09-26 18:02:24 [debug    ] vllm_completion                completion_tokens=176 prompt_tokens=2476
+2026-09-26 18:02:24 [info     ] capture_ok                     image_id=44 validation_passed=True
+2026-09-26 18:02:37 [debug    ] vllm_completion                completion_tokens=308 prompt_tokens=2476
+2026-09-26 18:02:37 [info     ] capture_ok                     image_id=45 validation_passed=True
+2026-09-26 18:02:47 [debug    ] vllm_completion                completion_tokens=231 prompt_tokens=2476
+2026-09-26 18:02:47 [info     ] capture_ok                     image_id=46 validation_passed=True
+2026-09-26 18:02:58 [debug    ] vllm_completion                completion_tokens=259 prompt_tokens=2476
+2026-09-26 18:02:58 [info     ] capture_ok                     image_id=47 validation_passed=True
+2026-09-26 18:03:06 [debug    ] vllm_completion                completion_tokens=187 prompt_tokens=2476
+2026-09-26 18:03:06 [info     ] capture_ok                     image_id=48 validation_passed=True
+2026-09-26 18:03:15 [debug    ] vllm_completion                completion_tokens=235 prompt_tokens=1882
+2026-09-26 18:03:15 [info     ] capture_ok                     image_id=49 validation_passed=True
+2026-09-26 18:03:21 [debug    ] vllm_completion                completion_tokens=134 prompt_tokens=2476
+2026-09-26 18:03:27 [debug    ] vllm_completion                completion_tokens=134 prompt_tokens=1291
+2026-09-26 18:03:34 [debug    ] vllm_completion                completion_tokens=134 prompt_tokens=1291
+2026-09-26 18:03:34 [info     ] capture_ok                     image_id=50 validation_passed=False
+2026-09-26 18:03:47 [debug    ] vllm_completion                completion_tokens=341 prompt_tokens=2276
+2026-09-26 18:04:00 [debug    ] vllm_completion                completion_tokens=341 prompt_tokens=1301
+2026-09-26 18:04:13 [debug    ] vllm_completion                completion_tokens=341 prompt_tokens=1301
+2026-09-26 18:04:13 [info     ] capture_ok                     image_id=51 validation_passed=False
+2026-09-26 18:04:23 [debug    ] vllm_completion                completion_tokens=238 prompt_tokens=2476
+2026-09-26 18:04:23 [info     ] capture_ok                     image_id=52 validation_passed=True
+2026-09-26 18:04:34 [debug    ] vllm_completion                completion_tokens=274 prompt_tokens=2476
+2026-09-26 18:04:34 [info     ] capture_ok                     image_id=53 validation_passed=True
+2026-09-26 18:04:42 [debug    ] vllm_completion                completion_tokens=173 prompt_tokens=2476
+2026-09-26 18:04:42 [info     ] capture_ok                     image_id=54 validation_passed=True
+2026-09-26 18:04:51 [debug    ] vllm_completion                completion_tokens=231 prompt_tokens=2476
+2026-09-26 18:04:51 [info     ] capture_ok                     image_id=55 validation_passed=True
+2026-09-26 18:04:59 [debug    ] vllm_completion                completion_tokens=129 prompt_tokens=3340
+2026-09-26 18:05:06 [debug    ] vllm_completion                completion_tokens=129 prompt_tokens=2148
+2026-09-26 18:05:13 [debug    ] vllm_completion                completion_tokens=129 prompt_tokens=2148
+2026-09-26 18:05:13 [info     ] capture_ok                     image_id=56 validation_passed=False
+2026-09-26 18:05:23 [debug    ] vllm_completion                completion_tokens=255 prompt_tokens=1882
+2026-09-26 18:05:32 [debug    ] vllm_completion                completion_tokens=255 prompt_tokens=819
+2026-09-26 18:05:42 [debug    ] vllm_completion                completion_tokens=255 prompt_tokens=819
+2026-09-26 18:05:42 [info     ] capture_ok                     image_id=57 validation_passed=False
+2026-09-26 18:05:54 [debug    ] vllm_completion                completion_tokens=192 prompt_tokens=7210
+2026-09-26 18:06:05 [debug    ] vllm_completion                completion_tokens=191 prompt_tokens=6085
+2026-09-26 18:06:05 [info     ] capture_ok                     image_id=58 validation_passed=True
+2026-09-26 18:06:47 [debug    ] vllm_completion                completion_tokens=574 prompt_tokens=13240
+2026-09-26 18:06:47 [info     ] capture_ok                     image_id=59 validation_passed=True
+2026-09-26 18:06:56 [debug    ] vllm_completion                completion_tokens=236 prompt_tokens=2276
+2026-09-26 18:06:56 [info     ] capture_ok                     image_id=60 validation_passed=True
+2026-09-26 18:07:11 [debug    ] vllm_completion                completion_tokens=408 prompt_tokens=1882
+2026-09-26 18:07:27 [debug    ] vllm_completion                completion_tokens=428 prompt_tokens=972
+2026-09-26 18:07:43 [debug    ] vllm_completion                completion_tokens=428 prompt_tokens=992
+2026-09-26 18:07:43 [info     ] capture_ok                     image_id=61 validation_passed=False
+2026-09-26 18:07:52 [debug    ] vllm_completion                completion_tokens=233 prompt_tokens=2476
+2026-09-26 18:07:52 [info     ] capture_ok                     image_id=62 validation_passed=True
+2026-09-26 18:08:01 [debug    ] vllm_completion                completion_tokens=231 prompt_tokens=2356
+2026-09-26 18:08:01 [info     ] capture_ok                     image_id=63 validation_passed=True
+2026-09-26 18:08:10 [debug    ] vllm_completion                completion_tokens=177 prompt_tokens=3340
+2026-09-26 18:08:18 [debug    ] vllm_completion                completion_tokens=177 prompt_tokens=2199
+2026-09-26 18:08:26 [debug    ] vllm_completion                completion_tokens=177 prompt_tokens=2199
+2026-09-26 18:08:26 [info     ] capture_ok                     image_id=64 validation_passed=False
+2026-09-26 18:08:34 [debug    ] vllm_completion                completion_tokens=172 prompt_tokens=2986
+2026-09-26 18:08:34 [info     ] capture_ok                     image_id=65 validation_passed=True
+2026-09-26 18:08:42 [debug    ] vllm_completion                completion_tokens=184 prompt_tokens=2476
+2026-09-26 18:08:42 [info     ] capture_ok                     image_id=66 validation_passed=True
+2026-09-26 18:08:49 [debug    ] vllm_completion                completion_tokens=186 prompt_tokens=1676
+2026-09-26 18:08:49 [info     ] capture_ok                     image_id=67 validation_passed=True
+2026-09-26 18:08:55 [debug    ] vllm_completion                completion_tokens=124 prompt_tokens=1882
+2026-09-26 18:09:00 [debug    ] vllm_completion                completion_tokens=133 prompt_tokens=684
+2026-09-26 18:09:06 [debug    ] vllm_completion                completion_tokens=133 prompt_tokens=693
+2026-09-26 18:09:06 [info     ] capture_ok                     image_id=68 validation_passed=False
+2026-09-26 18:09:26 [debug    ] vllm_completion                completion_tokens=291 prompt_tokens=10612
+2026-09-26 18:09:44 [debug    ] vllm_completion                completion_tokens=291 prompt_tokens=9585
+2026-09-26 18:10:00 [debug    ] vllm_completion                completion_tokens=291 prompt_tokens=9585
+2026-09-26 18:10:00 [info     ] capture_ok                     image_id=69 validation_passed=False
+2026-09-26 18:10:22 [debug    ] vllm_completion                completion_tokens=567 prompt_tokens=3006
+2026-09-26 18:10:22 [info     ] capture_ok                     image_id=70 validation_passed=True
+2026-09-26 18:10:29 [debug    ] vllm_completion                completion_tokens=182 prompt_tokens=1882
+2026-09-26 18:10:29 [info     ] capture_ok                     image_id=71 validation_passed=True
+2026-09-26 18:10:37 [debug    ] vllm_completion                completion_tokens=179 prompt_tokens=2476
+2026-09-26 18:10:37 [info     ] capture_ok                     image_id=72 validation_passed=True
+2026-09-26 18:10:47 [debug    ] vllm_completion                completion_tokens=233 prompt_tokens=2476
+2026-09-26 18:10:47 [info     ] capture_ok                     image_id=73 validation_passed=True
+2026-09-26 18:11:16 [debug    ] vllm_completion                completion_tokens=421 prompt_tokens=10612
+2026-09-26 18:11:41 [debug    ] vllm_completion                completion_tokens=420 prompt_tokens=9717
+2026-09-26 18:12:07 [debug    ] vllm_completion                completion_tokens=420 prompt_tokens=9716
+2026-09-26 18:12:07 [info     ] capture_ok                     image_id=74 validation_passed=False
+2026-09-26 18:12:22 [debug    ] vllm_completion                completion_tokens=420 prompt_tokens=1676
+2026-09-26 18:12:22 [info     ] capture_ok                     image_id=75 validation_passed=True
+2026-09-26 18:12:35 [debug    ] vllm_completion                completion_tokens=330 prompt_tokens=2476
+2026-09-26 18:12:48 [debug    ] vllm_completion                completion_tokens=330 prompt_tokens=1490
+2026-09-26 18:12:48 [info     ] capture_ok                     image_id=76 validation_passed=True
+2026-09-26 18:13:04 [debug    ] vllm_completion                completion_tokens=183 prompt_tokens=10612
+2026-09-26 18:13:04 [info     ] capture_ok                     image_id=77 validation_passed=True
+2026-09-26 18:13:23 [debug    ] vllm_completion                completion_tokens=224 prompt_tokens=10612
+2026-09-26 18:13:23 [info     ] capture_ok                     image_id=78 validation_passed=True
+2026-09-26 18:13:31 [debug    ] vllm_completion                completion_tokens=215 prompt_tokens=1882
+2026-09-26 18:13:31 [info     ] capture_ok                     image_id=79 validation_passed=True
+2026-09-26 18:13:38 [debug    ] vllm_completion                completion_tokens=171 prompt_tokens=1676
+2026-09-26 18:13:38 [info     ] capture_ok                     image_id=80 validation_passed=True
+2026-09-26 18:13:58 [debug    ] vllm_completion                completion_tokens=270 prompt_tokens=10612
+2026-09-26 18:13:58 [info     ] capture_ok                     image_id=81 validation_passed=True
+2026-09-26 18:14:09 [debug    ] vllm_completion                completion_tokens=287 prompt_tokens=2476
+2026-09-26 18:14:09 [info     ] capture_ok                     image_id=82 validation_passed=True
+2026-09-26 18:14:15 [debug    ] vllm_completion                completion_tokens=123 prompt_tokens=2476
+2026-09-26 18:14:23 [debug    ] vllm_completion                completion_tokens=194 prompt_tokens=1280
+2026-09-26 18:14:23 [info     ] capture_ok                     image_id=83 validation_passed=True
+2026-09-26 18:14:32 [debug    ] vllm_completion                completion_tokens=226 prompt_tokens=2156
+2026-09-26 18:14:32 [info     ] capture_ok                     image_id=84 validation_passed=True
+2026-09-26 18:14:57 [debug    ] vllm_completion                completion_tokens=556 prompt_tokens=5466
+2026-09-26 18:15:20 [debug    ] vllm_completion                completion_tokens=556 prompt_tokens=4706
+2026-09-26 18:15:43 [debug    ] vllm_completion                completion_tokens=556 prompt_tokens=4706
+2026-09-26 18:15:43 [info     ] capture_ok                     image_id=85 validation_passed=False
+2026-09-26 18:15:51 [debug    ] vllm_completion                completion_tokens=223 prompt_tokens=1882
+2026-09-26 18:15:51 [info     ] capture_ok                     image_id=86 validation_passed=True
+2026-09-26 18:15:59 [debug    ] vllm_completion                completion_tokens=178 prompt_tokens=2476
+2026-09-26 18:16:06 [debug    ] vllm_completion                completion_tokens=182 prompt_tokens=1336
+2026-09-26 18:16:14 [debug    ] vllm_completion                completion_tokens=182 prompt_tokens=1340
+2026-09-26 18:16:14 [info     ] capture_ok                     image_id=87 validation_passed=False
+2026-09-26 18:16:24 [debug    ] vllm_completion                completion_tokens=234 prompt_tokens=2476
+2026-09-26 18:16:24 [info     ] capture_ok                     image_id=88 validation_passed=True
+2026-09-26 18:16:32 [debug    ] vllm_completion                completion_tokens=186 prompt_tokens=2476
+2026-09-26 18:16:32 [info     ] capture_ok                     image_id=89 validation_passed=True
+2026-09-26 18:16:40 [debug    ] vllm_completion                completion_tokens=181 prompt_tokens=3006
+2026-09-26 18:16:48 [debug    ] vllm_completion                completion_tokens=181 prompt_tokens=1869
+2026-09-26 18:16:56 [debug    ] vllm_completion                completion_tokens=181 prompt_tokens=1869
+2026-09-26 18:16:56 [info     ] capture_ok                     image_id=90 validation_passed=False
+2026-09-26 18:17:06 [debug    ] vllm_completion                completion_tokens=268 prompt_tokens=1466
+2026-09-26 18:17:06 [info     ] capture_ok                     image_id=91 validation_passed=True
+2026-09-26 18:17:13 [debug    ] vllm_completion                completion_tokens=180 prompt_tokens=1882
+2026-09-26 18:17:13 [info     ] capture_ok                     image_id=92 validation_passed=True
+2026-09-26 18:17:21 [debug    ] vllm_completion                completion_tokens=175 prompt_tokens=2476
+2026-09-26 18:17:21 [info     ] capture_ok                     image_id=93 validation_passed=True
+2026-09-26 18:17:33 [debug    ] vllm_completion                completion_tokens=319 prompt_tokens=2476
+2026-09-26 18:17:45 [debug    ] vllm_completion                completion_tokens=319 prompt_tokens=1479
+2026-09-26 18:17:58 [debug    ] vllm_completion                completion_tokens=319 prompt_tokens=1479
+2026-09-26 18:17:58 [info     ] capture_ok                     image_id=94 validation_passed=False
+2026-09-26 18:18:07 [debug    ] vllm_completion                completion_tokens=237 prompt_tokens=2476
+2026-09-26 18:18:07 [info     ] capture_ok                     image_id=95 validation_passed=True
+2026-09-26 18:18:15 [debug    ] vllm_completion                completion_tokens=183 prompt_tokens=2476
+2026-09-26 18:18:15 [info     ] capture_ok                     image_id=96 validation_passed=True
+2026-09-26 18:18:25 [debug    ] vllm_completion                completion_tokens=266 prompt_tokens=1681
+2026-09-26 18:18:35 [debug    ] vllm_completion                completion_tokens=279 prompt_tokens=628
+2026-09-26 18:18:35 [info     ] capture_ok                     image_id=97 validation_passed=True
+2026-09-26 18:18:51 [debug    ] vllm_completion                completion_tokens=298 prompt_tokens=5492
+2026-09-26 18:19:05 [debug    ] vllm_completion                completion_tokens=298 prompt_tokens=4474
+2026-09-26 18:19:20 [debug    ] vllm_completion                completion_tokens=298 prompt_tokens=4474
+2026-09-26 18:19:20 [info     ] capture_ok                     image_id=98 validation_passed=True
+2026-09-26 18:19:40 [debug    ] vllm_completion                completion_tokens=521 prompt_tokens=2476
+2026-09-26 18:20:00 [debug    ] vllm_completion                completion_tokens=521 prompt_tokens=1679
+2026-09-26 18:20:20 [debug    ] vllm_completion                completion_tokens=521 prompt_tokens=1679
+2026-09-26 18:20:20 [info     ] capture_ok                     image_id=99 validation_passed=False
+2026-09-26 18:20:20 [info     ] capture_done                   output_path=benchmarks\results\phase6_4b_default_capture.jsonl
+c=1: 5.2 docs/min, p50=10.2s p95=19.5s errors=0%
+c=2: 9.4 docs/min, p50=11.1s p95=22.4s errors=0%
+c=4: 15.9 docs/min, p50=12.6s p95=27.3s errors=0%
+c=8: 23.0 docs/min, p50=17.7s p95=35.7s errors=0%
+c=16: 24.5 docs/min, p50=32.9s p95=53.5s errors=0%
+c=32: 24.0 docs/min, p50=45.8s p95=90.7s errors=0%
+run_id=20260926T162034Z
+C:\Users\avish\Desktop\doc_int-vLLM\.venv\Lib\site-packages\modal\_utils\async_utils.py:43: DeprecationWarning: 'asyncio.WindowsSelectorEventLoopPolicy' is deprecated and slated for removal in Python 3.16
+  asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+C:\Users\avish\Desktop\doc_int-vLLM\.venv\Lib\site-packages\modal\_utils\async_utils.py:43: DeprecationWarning: 'asyncio.set_event_loop_policy' is deprecated and slated for removal in Python 3.16
+  asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+4b_default: done, mean visual tokens 2104

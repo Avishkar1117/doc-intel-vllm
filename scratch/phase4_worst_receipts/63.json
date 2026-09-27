@@ -1,0 +1,85 @@
+{
+  "image_id": 63,
+  "raw_ground_truth": {
+    "menu": [
+      {
+        "nm": "Kopi Susu Kampung.",
+        "cnt": "x1",
+        "price": "19.000",
+        "sub": [
+          {
+            "nm": "Ice"
+          },
+          {
+            "nm": "Kopi Susu Kampung Less Ice",
+            "price": "0"
+          }
+        ]
+      },
+      {
+        "nm": "Kopi Susu Kampung.",
+        "cnt": "x2",
+        "price": "38.000",
+        "sub": {
+          "nm": "Ice"
+        }
+      }
+    ],
+    "sub_total": {
+      "subtotal_price": "57.000"
+    },
+    "total": {
+      "total_price": "57.000",
+      "cashprice": "60.000",
+      "changeprice": "3.000"
+    }
+  },
+  "prediction": {
+    "data": {
+      "line_items": [
+        {
+          "name": "Kopi Susu Kampung. Ice",
+          "count": 1.0,
+          "unit_price": 19000.0,
+          "price": 19000.0,
+          "discount_price": 0.0
+        },
+        {
+          "name": "Kopi Susu Kampung. Less Ice",
+          "count": 2.0,
+          "unit_price": 19000.0,
+          "price": 38000.0,
+          "discount_price": 0.0
+        }
+      ],
+      "subtotals": {
+        "subtotal": 57000.0,
+        "discount": 0.0,
+        "service_charge": 0.0,
+        "other_service_charge": 0.0,
+        "tax": 0.0
+      },
+      "totals": {
+        "total": 57000.0,
+        "cash_paid": 60000.0,
+        "change_due": 3000.0,
+        "credit_card_paid": 0.0,
+        "emoney_paid": 0.0,
+        "menu_type_count": 2,
+        "menu_quantity_count": 3
+      }
+    },
+    "validation": {
+      "passed": true,
+      "errors": null,
+      "repair_attempts": 1
+    },
+    "usage": {
+      "prompt_tokens": 1162,
+      "completion_tokens": 255,
+      "visual_tokens": 0,
+      "total_tokens": 1417
+    },
+    "latency_ms": 15157.150499999261
+  }
+}

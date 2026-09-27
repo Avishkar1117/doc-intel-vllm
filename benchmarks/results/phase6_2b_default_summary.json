@@ -1,0 +1,7 @@
+{
+  "tag": "2b_default",
+  "model": "Qwen/Qwen3-VL-2B-Instruct",
+  "mm_processor_kwargs": "{}",
+  "vllm_version": "0.21.0",
+  "mean_visual_tokens": 2104.17
+}

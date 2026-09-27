@@ -1,0 +1,179 @@
+[
+  {
+    "file": "test000_items1.jpg",
+    "attempts_log": [
+      {
+        "attempt": 0,
+        "errors": [
+          "Line item + subtotal adjustments (-54545.0) does not match total (60000.0) within tolerance 0.02"
+        ],
+        "failure_kind": "business_rule"
+      },
+      {
+        "attempt": 1,
+        "errors": [
+          "Line item + subtotal adjustments (5455.0) does not match total (60000.0) within tolerance 0.02"
+        ],
+        "failure_kind": "business_rule"
+      },
+      {
+        "attempt": 2,
+        "errors": [
+          "Line item + subtotal adjustments (5455.0) does not match total (65455.0) within tolerance 0.02"
+        ],
+        "failure_kind": "business_rule"
+      }
+    ],
+    "final_passed": false,
+    "repair_attempts": 2,
+    "latency_s": 21.6,
+    "infra_rejected_reason": null
+  },
+  {
+    "file": "test001_items3.jpg",
+    "attempts_log": [
+      {
+        "attempt": 0,
+        "errors": [
+          "Line item + subtotal adjustments (0.0) does not match total (91000.0) within tolerance 0.02"
+        ],
+        "failure_kind": "business_rule"
+      },
+      {
+        "attempt": 1,
+        "errors": [],
+        "failure_kind": null
+      }
+    ],
+    "final_passed": true,
+    "repair_attempts": 1,
+    "latency_s": 16.7,
+    "infra_rejected_reason": null
+  },
+  {
+    "file": "test002_items1.jpg",
+    "attempts_log": [
+      {
+        "attempt": 0,
+        "errors": [],
+        "failure_kind": null
+      }
+    ],
+    "final_passed": true,
+    "repair_attempts": 0,
+    "latency_s": 9.6,
+    "infra_rejected_reason": null
+  },
+  {
+    "file": "test012_items2.jpg",
+    "attempts_log": [
+      {
+        "attempt": 0,
+        "errors": [],
+        "failure_kind": null
+      }
+    ],
+    "final_passed": true,
+    "repair_attempts": 0,
+    "latency_s": 9.7,
+    "infra_rejected_reason": null
+  },
+  {
+    "file": "test014_items6.jpg",
+    "attempts_log": [],
+    "final_passed": null,
+    "repair_attempts": 0,
+    "latency_s": 2.4,
+    "infra_rejected_reason": "The decoder prompt contains a(n) image item with 5814 embedding tokens, which exceeds the pre-allocated encoder cache size 2048. Please reduce the input size or increase the encoder cache size by setting --limit-mm-per-prompt at startup."
+  },
+  {
+    "file": "test020_items5.jpg",
+    "attempts_log": [
+      {
+        "attempt": 0,
+        "errors": [
+          "Line item + subtotal adjustments (469408.0) does not match total (343508.0) within tolerance 0.05"
+        ],
+        "failure_kind": "business_rule"
+      },
+      {
+        "attempt": 1,
+        "errors": [
+          "Line item + subtotal adjustments (469408.0) does not match total (343508.0) within tolerance 0.05"
+        ],
+        "failure_kind": "business_rule"
+      },
+      {
+        "attempt": 2,
+        "errors": [
+          "Line item + subtotal adjustments (469408.0) does not match total (343508.0) within tolerance 0.05"
+        ],
+        "failure_kind": "business_rule"
+      }
+    ],
+    "final_passed": false,
+    "repair_attempts": 2,
+    "latency_s": 43.8,
+    "infra_rejected_reason": null
+  },
+  {
+    "file": "test035_items4.jpg",
+    "attempts_log": [
+      {
+        "attempt": 0,
+        "errors": [],
+        "failure_kind": null
+      }
+    ],
+    "final_passed": true,
+    "repair_attempts": 0,
+    "latency_s": 13.1,
+    "infra_rejected_reason": null
+  },
+  {
+    "file": "test038_items9.jpg",
+    "attempts_log": [],
+    "final_passed": null,
+    "repair_attempts": 0,
+    "latency_s": 14.4,
+    "infra_rejected_reason": "The decoder prompt contains a(n) image item with 9216 embedding tokens, which exceeds the pre-allocated encoder cache size 2048. Please reduce the input size or increase the encoder cache size by setting --limit-mm-per-prompt at startup."
+  },
+  {
+    "file": "test041_items10.jpg",
+    "attempts_log": [
+      {
+        "attempt": 0,
+        "errors": [
+          "Line item + subtotal adjustments (295635.68) does not match total (365000.0) within tolerance 0.07"
+        ],
+        "failure_kind": "business_rule"
+      },
+      {
+        "attempt": 1,
+        "errors": [
+          "Line item + subtotal adjustments (295635.68) does not match total (365000.0) within tolerance 0.07"
+        ],
+        "failure_kind": "business_rule"
+      },
+      {
+        "attempt": 2,
+        "errors": [
+          "Line item + subtotal adjustments (295635.68) does not match total (365000.0) within tolerance 0.07"
+        ],
+        "failure_kind": "business_rule"
+      }
+    ],
+    "final_passed": false,
+    "repair_attempts": 2,
+    "latency_s": 56.5,
+    "infra_rejected_reason": null
+  },
+  {
+    "file": "test085_items11.jpg",
+    "attempts_log": [],
+    "final_passed": null,
+    "repair_attempts": 0,
+    "latency_s": 2.9,
+    "infra_rejected_reason": "The decoder prompt contains a(n) image item with 4070 embedding tokens, which exceeds the pre-allocated encoder cache size 2048. Please reduce the input size or increase the encoder cache size by setting --limit-mm-per-prompt at startup."
+  }
+]

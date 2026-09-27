@@ -1,0 +1,14 @@
+# Keeps the build context small and avoids shipping a platform-specific local venv into
+# the image (Dockerfile.api builds its own inside the container - see uv guide).
+.venv
+__pycache__
+*.pyc
+.mypy_cache
+.ruff_cache
+.git
+.github
+data
+scratch
+tests
+benchmarks/results
+*.md

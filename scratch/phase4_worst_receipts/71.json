@@ -1,0 +1,57 @@
+{
+  "image_id": 71,
+  "raw_ground_truth": {
+    "menu": {
+      "nm": "Cuka Apel Tetes",
+      "unitprice": "198000",
+      "cnt": "1",
+      "price": "198000"
+    },
+    "total": {
+      "total_price": "198000",
+      "cashprice": "200200",
+      "changeprice": "22000"
+    }
+  },
+  "prediction": {
+    "data": {
+      "line_items": [
+        {
+          "name": "Cuka Apel T eles 1",
+          "count": 1.0,
+          "unit_price": 198000.0,
+          "price": 198000.0,
+          "discount_price": 0.0
+        }
+      ],
+      "subtotals": {
+        "subtotal": 198000.0,
+        "discount": 0.0,
+        "service_charge": 0.0,
+        "other_service_charge": 0.0,
+        "tax": 0.0
+      },
+      "totals": {
+        "total": 198000.0,
+        "cash_paid": 200200.0,
+        "change_due": 2200.0,
+        "credit_card_paid": null,
+        "emoney_paid": null,
+        "menu_type_count": null,
+        "menu_quantity_count": null
+      }
+    },
+    "validation": {
+      "passed": true,
+      "errors": null,
+      "repair_attempts": 1
+    },
+    "usage": {
+      "prompt_tokens": 692,
+      "completion_tokens": 205,
+      "visual_tokens": 0,
+      "total_tokens": 897
+    },
+    "latency_ms": 13457.151900000099
+  }
+}
