@@ -10,7 +10,7 @@ name: deploy
 
 on:
   push:
-    branches: [main]
+    branches: [master]
 
 permissions:
   id-token: write # required to fetch the OIDC token azure/login exchanges for a session
