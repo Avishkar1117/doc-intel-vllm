@@ -33,7 +33,7 @@ VLLM_PORT = 8000
     # first boot pulls weights into the Volume; generous ceiling for that
     startup_timeout=MINUTES * 10,
     port=VLLM_PORT,
-    unauthenticated=True,  # allow public access to the server
+    unauthenticated=False,  # requires a Modal proxy auth token on every request
     env={
         "DOCINTEL_MODEL": MODEL_NAME,
         "DOCINTEL_MM_KWARGS": MM_KWARGS,

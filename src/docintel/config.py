@@ -19,5 +19,14 @@ class Settings(BaseSettings):
     vllm_api_key: str | None = None
     model_name: str = "Qwen/Qwen3-VL-4B-Instruct"
 
+    # Phase 7: public endpoint protection + storage wiring (PROJECT_BRIEF.md §5/§7, D-003).
+    # extract_api_key unset means the check is a no-op - local/mock/CI runs never set this
+    # env var, and the live deployment sets it via a Key Vault secret reference, never a
+    # literal value anywhere in config.
+    extract_api_key: str | None = None
+    rate_limit_per_minute: int = 20
+    storage_account_name: str | None = None
+    blob_container: str = "receipts"
+
 
 settings = Settings()

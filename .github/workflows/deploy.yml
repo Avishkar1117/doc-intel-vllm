@@ -1,1 +1,53 @@
-# .github/workflows/deploy.yml — build -> Azure Container Registry -> Container Apps. Filled in Phase 7 (Azure deployment, Tier 2 — Claude Code writes directly).
+# .github/workflows/deploy.yml — build -> push to ACR -> deploy to Container Apps (Phase 7).
+# Authenticates via OIDC (azure/login with a federated credential) - no Azure secret is ever
+# stored in GitHub, only three non-secret identifiers (client/tenant/subscription ID). Setup
+# for the federated credential itself is documented in infra/README.md, not here.
+#
+# Builds with plain docker, not `az acr build` - this subscription is Azure for Students,
+# where ACR Tasks (the cloud-build feature that command relies on) is blocked outright as an
+# anti-abuse measure on trial-tier subscriptions (see DECISIONS.md).
+name: deploy
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  id-token: write # required to fetch the OIDC token azure/login exchanges for a session
+  contents: read
+
+env:
+  ACR_NAME: acrdocintel90b9a600
+  RESOURCE_GROUP: rg-docintel
+  CONTAINER_APP: app-docintel
+  IMAGE_NAME: docintel-api
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Azure login (OIDC, no client secret)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Log in to ACR
+        run: az acr login --name ${{ env.ACR_NAME }}
+
+      # Tagged by commit SHA, not a hand-bumped v1/v2/v3 - every image is traceable to the
+      # exact commit that produced it, and nothing ever silently overwrites a previous tag.
+      - name: Build and push image
+        run: |
+          docker build -t ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }} -f docker/Dockerfile.api .
+          docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+      - name: Deploy new image to Container App
+        run: |
+          az containerapp update \
+            --name ${{ env.CONTAINER_APP }} \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --image ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}

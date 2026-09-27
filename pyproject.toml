@@ -25,7 +25,8 @@ dependencies = [
     "azure-ai-documentintelligence>=1.0.0",
     "azure-storage-blob>=12.20",
     "azure-identity>=1.16",
-    "pyarrow>=17"
+    "pyarrow>=17",
+    "azure-monitor-opentelemetry>=1.6",
 ]
 
 [project.optional-dependencies]
