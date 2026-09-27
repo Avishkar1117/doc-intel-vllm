@@ -1,9 +1,19 @@
 """Tests for eval/cord.py's loader - the one piece of the Phase 4 accuracy harness that
-doesn't depend on the normalization/matching/scoring TODOs. Reads the real committed
-CORD test parquet (no GPU, no network - PROJECT_BRIEF.md §6: data/cord/ ships in-repo).
+doesn't depend on the normalization/matching/scoring TODOs. Reads the real CORD test
+parquet from data/cord/ (no GPU, no network).
+
+data/ is gitignored (2.2GB, public, re-downloadable - not worth bloating every clone of
+the repo with). CI has no copy of it, so these three tests skip there rather than fail;
+they still run fully on any machine that has the dataset downloaded locally.
 """
 
-from docintel.eval.cord import CordSample, load_cord_test_split
+import pytest
+
+from docintel.eval.cord import TEST_SPLIT_PATH, CordSample, load_cord_test_split
+
+pytestmark = pytest.mark.skipif(
+    not TEST_SPLIT_PATH.exists(), reason="CORD dataset not present (gitignored, local-only)"
+)
 
 
 def test_loads_all_100_test_split_receipts() -> None:
