@@ -28,5 +28,11 @@ class Settings(BaseSettings):
     storage_account_name: str | None = None
     blob_container: str = "receipts"
 
+    # Phase 8: baseline.py's Document Intelligence client (PROJECT_BRIEF.md §7/§8, D-007).
+    # Unset-safe like every other credential here - local/mock/CI never sets these, only
+    # the actual Phase 8 SROIE run does, via a real resource endpoint + key.
+    di_endpoint: str | None = None
+    di_api_key: str | None = None
+
 
 settings = Settings()

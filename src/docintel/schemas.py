@@ -64,4 +64,20 @@ class ExtractionResponse(BaseModel):
     usage : Usage
     latency_ms : float = Field(ge=0)
 
+class SroieReceipt(BaseModel):
+    company : str | None = Field(
+        description="the store/business name as printed the brand name, not a slogan and address"
+    )
+    address : str |  None = Field(
+        description=(
+            "the full postal address as printed, merged into one string if it spans "
+            "multiple lines"
+        )
+    )
+    date : str | None = Field(
+        description="the date of the transaction as printed, in whatever format it was printed"
+    )
+    total : float = Field( gt=0, description="final amount actually paid as printed")
+
+
 

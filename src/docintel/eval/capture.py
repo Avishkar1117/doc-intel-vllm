@@ -7,6 +7,7 @@ from pathlib import Path
 import httpx
 import structlog
 
+from docintel.config import settings
 from docintel.eval.cord import load_cord_test_split
 from docintel.extraction.client import HTTPClient
 from docintel.extraction.pipeline import extract
@@ -53,11 +54,16 @@ def _wait_until_healthy(base_url: str) -> None:
     container scaled to zero since the last request) takes minutes, and a real request
     fired at a not-yet-ready server 503s or has its connection dropped mid-response,
     exactly what happened the first time this script ran without this check."""
+    # Phase 7 set unauthenticated=False on the Modal server - every request, including
+    # a plain health check, now needs the Modal proxy auth token or the proxy itself
+    # rejects it before the request ever reaches the container. Empty when unset
+    # (mock/CI/no-key paths), same as HTTPClient's own header construction.
+    headers = {"Authorization": f"Bearer {settings.vllm_api_key}"} if settings.vllm_api_key else {}
     deadline = time.monotonic() + HEALTH_POLL_TIMEOUT_S
     streak = 0
     while time.monotonic() < deadline:
         try:
-            if httpx.get(f"{base_url}/health", timeout=10).status_code == 200:
+            if httpx.get(f"{base_url}/health", timeout=10, headers=headers).status_code == 200:
                 streak += 1
                 if streak >= HEALTHY_STREAK_REQUIRED:
                     return
@@ -107,7 +113,7 @@ def capture(base_url: str, output_path: Path = DEFAULT_OUTPUT_PATH) -> None:
     """
     logger.info("capture_waiting_for_healthy", base_url=base_url)
     _wait_until_healthy(base_url)
-    client = HTTPClient(base_url=base_url)
+    client = HTTPClient(base_url=base_url, api_key=settings.vllm_api_key)
 
     already_captured: set[int] = set()
     if output_path.exists():

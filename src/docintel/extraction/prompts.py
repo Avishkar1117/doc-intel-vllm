@@ -49,6 +49,38 @@ def build_extraction_prompt(schema: type[BaseModel] = Receipt) -> str:
     return f"{_EXTRACTION_INSTRUCTIONS}\nJSON schema:\n{schema_text}\n"
 
 
+# Phase 8 (PROJECT_BRIEF.md §7/§8, D-007): SROIE is the 4-field DI comparison bench, not
+# a smaller CORD - it gets its own instructions rather than reusing _EXTRACTION_INSTRUCTIONS,
+# because that text's thousands-separator rule is CORD-specific (Indonesian/SEA receipts) and
+# would misfire on nothing here - SROIE is English with standard decimal notation - but
+# leaving it in would be an unverified assumption riding along for no reason. No PROMPT_VERSION
+# bump: this is a new, independent prompt, not an edit to the versioned CORD one.
+SROIE_PROMPT_VERSION = "v1"
+
+_SROIE_INSTRUCTIONS = """\
+You are extracting structured data from a photograph or scan of a retail receipt.
+
+Return a single JSON object matching the schema below. Follow these rules:
+- This receipt is in English and uses standard decimal notation. Do not apply any
+  thousands-separator reinterpretation to printed amounts - a period before exactly two
+  digits is a decimal point, full stop.
+- `total` is the final amount actually paid, as a plain number - no currency symbol, no
+  thousands separator.
+- `company`, `address`, and `date` are strings. Transcribe each exactly as printed,
+  including whatever date format the receipt itself uses - do not reformat, reorder, or
+  normalize them.
+- If a field is not present or is illegible on the receipt, and the schema allows it, use
+  null rather than guessing or inventing a value.
+"""
+
+
+def build_sroie_extraction_prompt(schema: type[BaseModel]) -> str:
+    """Builds the SROIE user-turn instruction text - same shape as build_extraction_prompt,
+    deliberately no default `schema` so this can't accidentally import a not-yet-typed model."""
+    schema_text = json.dumps(schema.model_json_schema(), indent=2)
+    return f"{_SROIE_INSTRUCTIONS}\nJSON schema:\n{schema_text}\n"
+
+
 def build_repair_prompt(schema: type[BaseModel], prior_output: str, errors: list[str]) -> str:
     """Builds a re-prompt for the bounded repair loop: prior output plus what failed.
 
