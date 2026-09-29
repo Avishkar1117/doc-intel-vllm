@@ -349,6 +349,14 @@ az storage blob download --account-name stdocintel90b9a600 --container-name ledg
 curl https://<app fqdn>/demo/status
 ```
 
+Keep the demo's usage history for the months the site stays up. The workspace default is 30
+days; 180 days of this project's volume (under 1 MB a month) costs a fraction of a cent, since
+only storage beyond the free 31 days is billed:
+
+```bash
+az monitor log-analytics workspace update -g rg-docintel -n law-docintel --retention-time 180
+```
+
 **What "Wake the GPU" costs:** the first request to a sleeping Modal server is rejected with a
 503 but starts a container; measured time to healthy was 313 s. The ledger charges a warm-up
 a cold start plus one idle window (about $0.17 with the 1.1 margin), so a $5 month is roughly
