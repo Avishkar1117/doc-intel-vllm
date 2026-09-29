@@ -29,8 +29,10 @@ from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
 from docintel.config import settings
 from docintel.cost import estimate_request_cost_usd
+from docintel.demo import router as demo_router
 from docintel.extraction.client import get_client
 from docintel.extraction.pipeline import extract
+from docintel.netutil import client_ip
 
 # JSON-rendered, own configuration - the app tier's log format. extraction/client.py's
 # logger inherits whatever the *caller* configures, so this only takes effect when api.py
@@ -61,6 +63,10 @@ app = FastAPI(title="docintel", version="0.1.0")
 if os.environ.get("APPLICATIONINSIGHTS_CONNECTION_STRING"):
     FastAPIInstrumentor.instrument_app(app)
 
+# The public demo page lives in its own module with its own limits, budget ledger and no API
+# key; /extract above stays key-protected and untouched by it.
+app.include_router(demo_router)
+
 # In-process sliding-window limiter, keyed by client IP. Deliberately not a separate
 # library: one endpoint, one replica, a dict of deques is the entire mechanism, and adding
 # a dependency here would be exactly the premature abstraction CLAUDE.md warns against.
@@ -68,21 +74,8 @@ _RATE_WINDOW_SECONDS = 60
 _request_log: defaultdict[str, deque[float]] = defaultdict(deque)
 
 
-def _client_ip(request: Request) -> str:
-    # Azure Container Apps' ingress is a reverse proxy - request.client.host can be the
-    # proxy's own address rather than the real caller, which would put every caller in one
-    # shared bucket. The ingress *appends* the real client IP to any X-Forwarded-For the
-    # caller sent, and only that rightmost entry is trustworthy (Microsoft's ingress docs);
-    # reading the leftmost let a caller dodge the limiter by rotating a fake header value
-    # (reproduced live: 20x401 then 429 on one fake value, a fresh 401 on the next).
-    forwarded = request.headers.get("x-forwarded-for")
-    if forwarded:
-        return forwarded.split(",")[-1].strip()
-    return request.client.host if request.client else "unknown"
-
-
 def _enforce_rate_limit(request: Request) -> None:
-    client_key = _client_ip(request)
+    client_key = client_ip(request)
     now = time.monotonic()
     window = _request_log[client_key]
     while window and now - window[0] > _RATE_WINDOW_SECONDS:

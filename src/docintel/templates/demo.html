@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Receipt extraction demo</title>
+<style>
+  :root {
+    --bg: #fafaf7; --fg: #1d1d1b; --muted: #66665f; --card: #ffffff; --line: #dcdcd4;
+    --accent: #1f5f8b; --good: #1d7a46; --bad: #b3261e; --warn-bg: #fff4d6; --err-bg: #fde8e6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #161614; --fg: #ecece6; --muted: #a3a39b; --card: #20201d; --line: #3a3a35;
+      --accent: #6cb4e4; --good: #62c48a; --bad: #ff8a80; --warn-bg: #3a3116; --err-bg: #3d1f1c;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg);
+         font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 860px; margin: 0 auto; padding: 24px 16px 48px; }
+  h1 { font-size: 1.6rem; margin: 0 0 4px; }
+  h2 { font-size: 1.15rem; margin: 32px 0 8px; }
+  .lede, .muted { color: var(--muted); }
+  .card, .banner { background: var(--card); border: 1px solid var(--line); border-radius: 8px;
+                   padding: 12px 14px; margin: 12px 0; }
+  .banner.notice { background: var(--warn-bg); }
+  .banner.error { background: var(--err-bg); border-color: var(--bad); }
+  button, .button { font: inherit; padding: 8px 14px; border-radius: 6px; cursor: pointer;
+                    border: 1px solid var(--accent); background: var(--accent); color: var(--bg); }
+  button[disabled] { opacity: 0.55; cursor: default; }
+  input[type=file] { max-width: 100%; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line);
+           vertical-align: top; overflow-wrap: anywhere; }
+  th:first-child { white-space: nowrap; }
+  .table-wrap { overflow-x: auto; }
+  .wrong { color: var(--bad); font-weight: 600; }
+  .ok { color: var(--good); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
+  .grid a { display: block; border: 1px solid var(--line); border-radius: 6px; padding: 6px;
+            background: var(--card); color: inherit; text-decoration: none; font-size: 0.85rem; }
+  .grid a[aria-current=true] { border-color: var(--accent); outline: 2px solid var(--accent); }
+  .grid img, .receipt img { width: 100%; height: 130px; object-fit: cover; object-position: top;
+                            border-radius: 4px; display: block; }
+  .receipt img { height: auto; max-height: 520px; object-fit: contain; }
+  @media (min-width: 720px) { .compare { display: grid; grid-template-columns: 1fr 2fr; gap: 16px; } }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Self-hosted receipt extraction</h1>
+  <p class="lede">Qwen3-VL-4B served with vLLM on a rented GPU, compared with Azure AI Document
+  Intelligence on the same receipts.</p>
+
+  <div class="banner notice">
+    This runs on a shared cloud GPU. Use the samples below or a receipt you don't mind sending to
+    a cloud service. Your upload is processed for one request and is not saved by this app;
+    request metadata (time, size, latency) is logged.
+  </div>
+
+  {% if error %}
+  <div class="banner error" role="alert">{{ error }}</div>
+  {% endif %}
+
+  <h2>Try your own receipt</h2>
+  <div class="card">
+    <p id="gpu-status" data-state="{{ status.gpu }}">{{ status.message }}</p>
+    {% if status.live %}
+      <button id="warm-button" type="button"{% if status.gpu != 'cold' %} hidden{% endif %}>Wake the GPU</button>
+      <form id="upload-form" method="post" action="/demo/extract" enctype="multipart/form-data"
+            {% if status.gpu != 'ready' %}hidden{% endif %}>
+        <p><label for="file">JPEG or PNG, up to 4 MB</label><br>
+        <input id="file" name="file" type="file" accept="image/jpeg,image/png" required></p>
+        <button id="upload-button" type="submit">Read this receipt</button>
+        <span id="upload-note" class="muted" hidden> Reading the receipt, usually 5 to 10 seconds.</span>
+      </form>
+    {% endif %}
+  </div>
+
+  {% if result %}
+  <h2>Result</h2>
+  <div class="card">
+    {% if result.read_ok %}
+    <div class="table-wrap"><table>
+      <tr><th>Company</th><td>{{ result.company if result.company is not none else '-' }}</td></tr>
+      <tr><th>Date</th><td>{{ result.date if result.date is not none else '-' }}</td></tr>
+      <tr><th>Address</th><td>{{ result.address if result.address is not none else '-' }}</td></tr>
+      <tr><th>Total</th><td>{{ '%.2f'|format(result.total) }}</td></tr>
+    </table></div>
+    {% else %}
+    <p>The model could not find a readable total on this image, so there is no result to show.</p>
+    {% endif %}
+    <p class="muted">Took {{ result.latency_ms }} ms, {{ result.visual_tokens }} visual tokens,
+    about ${{ '%.4f'|format(result.cost_usd) }} of GPU time for this request. The model reads
+    what is printed and may get a field wrong.</p>
+  </div>
+  {% endif %}
+
+  {% if bundle %}
+  <h2>Ten cached samples</h2>
+  <p class="muted">{{ bundle.label }} Click one to see both systems' saved answers. No GPU is used.</p>
+  <div class="grid">
+    {% for s in bundle.samples %}
+    <a href="/demo?sample={{ s.id }}#compare"{% if selected and selected.id == s.id %} aria-current="true"{% endif %}>
+      <img src="/demo/sample/{{ s.image }}" alt="Receipt sample {{ loop.index }}" loading="lazy">
+      Sample {{ loop.index }}
+    </a>
+    {% endfor %}
+  </div>
+
+  {% if selected %}
+  <div id="compare" class="card">
+    <p><strong>{{ selected.role }}</strong></p>
+    <div class="compare">
+      <div class="receipt"><img src="/demo/sample/{{ selected.image }}" alt="Selected receipt"></div>
+      <div class="table-wrap"><table>
+        <tr><th></th><th>Ground truth</th><th>Our model</th><th>Azure DI</th></tr>
+        {% for f in ['company', 'date', 'address', 'total'] %}
+        <tr>
+          <th>{{ f|capitalize }}</th>
+          <td>{{ selected.gold[f] }}</td>
+          <td class="{{ 'wrong' if f in selected.self_hosted.fields_wrong else 'ok' }}">{{ selected.self_hosted.get(f) if selected.self_hosted.get(f) is not none else '-' }}</td>
+          <td class="{{ 'wrong' if f in selected.di.fields_wrong else 'ok' }}">{{ selected.di.get(f) if selected.di.get(f) is not none else '-' }}</td>
+        </tr>
+        {% endfor %}
+      </table></div>
+    </div>
+    {% if selected.di.status == 'no_total' %}
+    <p class="muted">Azure DI returned no total for this receipt.</p>
+    {% elif selected.di.status == 'wrong_negative_total' %}
+    <p class="muted">Azure DI returned a negative total for this receipt; its other fields were not kept.</p>
+    {% endif %}
+    <p class="muted">Red means it disagrees with the ground truth under the project's scoring rules
+    (dates compare the calendar day; addresses compare by word overlap). Latency:
+    ours {{ selected.self_hosted.latency_ms }} ms{% if selected.di.latency_ms is not none %}, DI {{ selected.di.latency_ms }} ms{% endif %}.</p>
+  </div>
+  {% endif %}
+
+  <h2>How the two compare on all {{ bundle.benchmark.n_receipts }} test receipts</h2>
+  <div class="table-wrap"><table>
+    <tr><th>System</th><th>Overall F1</th><th>Company</th><th>Address</th><th>Date</th><th>Total</th><th>p50</th><th>$ per 1k docs</th></tr>
+    {% for row in bundle.table %}
+    <tr>
+      <td>{{ row.system }}</td><td>{{ row.overall_f1 }}</td><td>{{ row.company_f1 }}</td>
+      <td>{{ row.address_f1 }}</td><td>{{ row.date_f1 }}</td><td>{{ row.total_f1 }}</td>
+      <td>{{ row.latency_p50_ms }} ms</td><td>{{ row.usd_per_1k_docs }}</td>
+    </tr>
+    {% endfor %}
+  </table></div>
+  <p class="muted">Azure DI returned no total on {{ bundle.benchmark.di_no_total }} receipts and a wrong
+  negative total on {{ bundle.benchmark.di_wrong_negative_total }}; the self-hosted model answered every
+  receipt. On the {{ bundle.benchmark.f1_both_answered.n }} receipts both answered, F1 is
+  {{ bundle.benchmark.f1_both_answered.self_hosted }} (ours) against
+  {{ bundle.benchmark.f1_both_answered.di }} (DI). One run per system at default sampling settings,
+  vLLM {{ bundle.benchmark.vllm_version }}, DI API {{ bundle.benchmark.di_api_version }}.</p>
+  {% else %}
+  <p class="muted">The cached samples are unavailable right now.</p>
+  {% endif %}
+</main>
+
+<script>
+(function () {
+  var statusEl = document.getElementById("gpu-status");
+  var warmBtn = document.getElementById("warm-button");
+  var form = document.getElementById("upload-form");
+  var uploadBtn = document.getElementById("upload-button");
+  var note = document.getElementById("upload-note");
+
+  function apply(state) {
+    statusEl.textContent = state.message;
+    statusEl.dataset.state = state.gpu;
+    if (warmBtn) { warmBtn.hidden = state.gpu !== "cold"; warmBtn.disabled = false; }
+    if (form) { form.hidden = state.gpu !== "ready"; }
+    if (state.gpu === "warming") { setTimeout(poll, 5000); }
+  }
+  function poll() {
+    fetch("/demo/status", { cache: "no-store" })
+      .then(function (r) { return r.json(); })
+      .then(apply)
+      .catch(function () { setTimeout(poll, 10000); });
+  }
+  if (warmBtn) {
+    warmBtn.addEventListener("click", function () {
+      warmBtn.disabled = true;
+      statusEl.textContent = "Waking the GPU. This takes about 3 to 7 minutes; you can leave this tab open.";
+      fetch("/demo/warm", { method: "POST" })
+        .then(function (r) { return r.json().then(function (body) { return { ok: r.ok, body: body }; }); })
+        .then(function (res) {
+          if (res.ok) { poll(); return; }
+          statusEl.textContent = res.body.outcome === "rate_limited"
+            ? "You've woken the GPU a few times already this hour. Please try later."
+            : "The GPU can't be woken right now (budget or usage counter). The samples still work.";
+        })
+        .catch(function () { statusEl.textContent = "Couldn't reach the server. Try again."; warmBtn.disabled = false; });
+    });
+  }
+  if (form) {
+    form.addEventListener("submit", function () {
+      uploadBtn.disabled = true;
+      note.hidden = false;
+    });
+  }
+  if (statusEl.dataset.state === "warming") { poll(); }
+})();
+</script>
+</body>
+</html>

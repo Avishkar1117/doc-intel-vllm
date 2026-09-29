@@ -6,7 +6,8 @@ with no GPU and no live Modal endpoint. Per CLAUDE.md: tests run without a GPU.
 from fastapi.testclient import TestClient
 from starlette.requests import Request
 
-from docintel.api import _client_ip, app
+from docintel.api import app
+from docintel.netutil import client_ip as _client_ip
 
 client = TestClient(app)
 
