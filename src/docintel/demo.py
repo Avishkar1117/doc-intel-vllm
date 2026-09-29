@@ -68,8 +68,8 @@ class DemoSettings(BaseSettings):
 
     budget_usd: float = 5.0
     cost_margin: float = 1.1
-    # Must equal scaledown_window in the demo Modal app.
-    scaledown_window_s: float = 120.0
+    # Must equal scaledown_window in modal_demo.py (5 minutes).
+    scaledown_window_s: float = 300.0
     # Worst measured cold start (Phase 5: 6m24s = 384s).
     cold_start_s: float = 384.0
     daily_request_cap: int = 60
