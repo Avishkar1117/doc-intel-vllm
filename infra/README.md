@@ -283,6 +283,77 @@ gh secret set AZURE_TENANT_ID --body "<tenant-id>"
 gh secret set AZURE_SUBSCRIPTION_ID --body "<subscription-id>"
 ```
 
+## 12. Phase 9: the public demo page
+
+Two more private containers in the same storage account (outside the lifecycle policy's
+`receipts/` prefix, so nothing here is auto-deleted), one for the ten cached samples and one
+for the spend ledger's state blob:
+
+```bash
+az storage container create --name demo-samples --account-name stdocintel90b9a600 --auth-mode login
+az storage container create --name ledger --account-name stdocintel90b9a600 --auth-mode login
+```
+
+**Gotcha, second time:** uploading with `--auth-mode login` fails with a permissions error
+even for the account owner. Owner is a control-plane role; blob data needs its own grant
+(same class as the Key Vault gotcha in §4):
+
+```bash
+export MSYS_NO_PATHCONV=1
+MY_ID=$(az ad signed-in-user show --query id -o tsv)
+ST_ID=$(az storage account show -n stdocintel90b9a600 --query id -o tsv)
+az role assignment create --assignee "$MY_ID" --role "Storage Blob Data Contributor" --scope "$ST_ID"
+# role propagation took about a minute; retry the upload until it works
+```
+
+Build the sample bundle locally (needs the SROIE parquet under `data/`), then upload it. The
+images are not in git; only `samples.json` and the images in this container serve the page:
+
+```bash
+uv run python benchmarks/build_demo_samples.py
+az storage blob upload-batch --account-name stdocintel90b9a600 --destination demo-samples \
+  --source demo_samples --auth-mode login --overwrite
+```
+
+The demo's rate limiter and the spend ledger assume exactly one app replica:
+
+```bash
+az containerapp update -n app-docintel -g rg-docintel --min-replicas 0 --max-replicas 1
+```
+
+The demo GPU is a separate Modal app in its own environment (`modal_demo.py`; one L4,
+five-minute idle window, `max_containers=1`). It mounts the weights Volume from `main`, so
+nothing is downloaded again:
+
+```bash
+uv run modal environment create demo
+uv run modal deploy -e demo modal_demo.py     # prints the *.modal.direct URL
+```
+
+Point the Container App at it. The Modal proxy token is the same workspace token already
+stored as the `modal-vllm-api-key` secret, so no new secret is needed. The scaledown value
+must equal `scaledown_window` in `modal_demo.py` (it prices the idle tail in the ledger):
+
+```bash
+az containerapp update -n app-docintel -g rg-docintel --set-env-vars \
+  "DOCINTEL_DEMO_VLLM_BASE_URL=<the modal.direct URL>" \
+  "DOCINTEL_DEMO_VLLM_API_KEY=secretref:modal-vllm-api-key" \
+  "DOCINTEL_DEMO_SCALEDOWN_WINDOW_S=300"
+```
+
+Check the ledger and the page:
+
+```bash
+az storage blob download --account-name stdocintel90b9a600 --container-name ledger \
+  --name state.json --file - --auth-mode login
+curl https://<app fqdn>/demo/status
+```
+
+**What "Wake the GPU" costs:** the first request to a sleeping Modal server is rejected with a
+503 but starts a container; measured time to healthy was 313 s. The ledger charges a warm-up
+a cold start plus one idle window (about $0.17 with the 1.1 margin), so a $5 month is roughly
+30 cold visits before live extraction switches off and only the cached samples remain.
+
 ## Teardown
 
 This deployment exists to prove the engineering happened, not to run forever (§4 of
@@ -295,7 +366,16 @@ everything else is usage-based and near-$0 when idle:
 az group delete --name rg-docintel --yes
 ```
 
-This deletes every resource this document created. The GitHub Actions identity
+This deletes every resource this document created, including the Document Intelligence
+resource (`docintel-di`, F0) and both new containers. The Modal side is separate and not
+covered by it; stop both apps (`main` normally already scaled to zero):
+
+```bash
+uv run modal app stop vllm-doc-intelligence-demo -e demo -y
+uv run modal app stop vllm-doc-intelligence -y
+```
+
+The GitHub Actions identity
 (`docintel-github-deploy`) and its role assignments are not inside the resource group and
 need a separate cleanup if you want them gone too:
 
