@@ -4,10 +4,26 @@ with no GPU and no live Modal endpoint. Per CLAUDE.md: tests run without a GPU.
 """
 
 from fastapi.testclient import TestClient
+from starlette.requests import Request
 
-from docintel.api import app
+from docintel.api import _client_ip, app
 
 client = TestClient(app)
+
+
+def _request_with_headers(headers: list[tuple[bytes, bytes]]) -> Request:
+    return Request({"type": "http", "headers": headers, "client": ("10.0.0.1", 1234)})
+
+
+def test_client_ip_uses_rightmost_forwarded_entry() -> None:
+    # A caller-supplied leading value must not decide the rate-limit bucket: the ingress
+    # appends the real IP, so only the rightmost entry is trustworthy.
+    spoofed = _request_with_headers([(b"x-forwarded-for", b"203.0.113.77, 198.51.100.9")])
+    assert _client_ip(spoofed) == "198.51.100.9"
+
+
+def test_client_ip_falls_back_to_peer_address() -> None:
+    assert _client_ip(_request_with_headers([])) == "10.0.0.1"
 
 
 def test_health() -> None:
