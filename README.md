@@ -7,6 +7,12 @@ serving configurations, and compares the result with Azure AI Document Intellige
 
 Receipt extraction is the workload. The serving measurement is the point.
 
+**Live demo: https://app-docintel.purplebay-f7aec3f1.germanywestcentral.azurecontainerapps.io/demo**
+Browse ten cached samples side by side with Azure Document Intelligence right away, or wake the
+GPU (about 5 minutes from cold) and try a receipt of your own. It runs on a shared cloud GPU
+with a small monthly budget, so please use a receipt you don't mind sending to a cloud service.
+When the budget is used up the page falls back to the cached samples.
+
 <!-- After recording, put the demo GIF at docs/demo.gif and uncomment the next line:
 ![Demo](docs/demo.gif)
 -->
@@ -99,7 +105,7 @@ runs against a mock locally, a Modal endpoint during measurement, and the deploy
   visitor wake the GPU and try one receipt. It has no key, so cost is capped in layers: per-IP
   limits, a daily request cap, a monthly spend ledger stored in Blob that fails closed, and no
   route that wakes the GPU except an explicit, ledger-charged one. Uploads there are not stored.
-  The live deployment is taken down after the demo is recorded to avoid idle cost.
+  The GPU and the app both scale to zero when idle.
 
 ## Reproduce
 
