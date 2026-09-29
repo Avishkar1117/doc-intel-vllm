@@ -11,6 +11,7 @@ from pathlib import Path
 
 from pydantic import ValidationError
 
+from docintel.eval.cord import FieldCounts, ReceiptScore
 from docintel.eval.report import aggregate_scores
 from docintel.eval.sroie import normalize_sroie_receipt, score_sroie_receipt
 from docintel.schemas import SroieReceipt
@@ -58,15 +59,27 @@ def _di_predicted(record: dict) -> SroieReceipt | None:
     return SroieReceipt.model_validate(record["prediction"])
 
 
+def _is_wrong_negative_total(record: dict) -> bool:
+    """DI answered, but with a negative total that SroieReceipt.total (gt=0) rejects.
+
+    Phase 8 filed these under `no_total` alongside DI's genuine no-Total misses (D-038).
+    They are wrong answers, not missing ones: gold is positive on all four, and the
+    stored `prediction` is None, so only DI's total value is known (from the error text).
+    """
+    return "validation error for SroieReceipt" in (record.get("error") or "")
+
+
 def score_system(records: list[dict], get_predicted: object) -> dict[str, object]:
-    """Scores every record that produced a usable prediction; everything else (an
-    infra rejection, a transient failure, DI's own no_total misses, an unparseable
-    single-shot output) is tracked as a coverage gap - never folded into accuracy
-    either way, same convention CORD's eval already uses (D-014).
+    """Scores every record that produced a usable prediction. The rest are split by cause
+    (D-038): no output at all (infra rejection, transient failure, DI's own no-Total
+    miss, unparseable single-shot output), gold that fails SroieReceipt validation, and
+    DI's wrong negative totals - scored as a `total`-only error, since the record holds
+    no other DI field. Coverage gaps are never folded into accuracy (D-014).
     """
     scores = []
     latencies = []
-    n_coverage_gap = 0
+    n_no_output = 0
+    n_total_only = 0
     n_gold_invalid = 0
     for r in records:
         try:
@@ -81,7 +94,15 @@ def score_system(records: list[dict], get_predicted: object) -> dict[str, object
             continue
         predicted = get_predicted(r)  # type: ignore[operator]
         if predicted is None:
-            n_coverage_gap += 1
+            if _is_wrong_negative_total(r):
+                # One FP (the wrong value) and one FN (the right value missed), the same
+                # bookkeeping score_field uses for a value mismatch (D-018).
+                scores.append(
+                    ReceiptScore(r["image_id"], {"total": FieldCounts(fp=1, fn=1)})
+                )
+                n_total_only += 1
+            else:
+                n_no_output += 1
             continue
         scores.append(score_sroie_receipt(r["image_id"], predicted, gold))
         if r.get("latency_ms") is not None:
@@ -90,7 +111,9 @@ def score_system(records: list[dict], get_predicted: object) -> dict[str, object
         "scores": scores,
         "latencies": latencies,
         "n_total": len(records),
-        "n_coverage_gap": n_coverage_gap + n_gold_invalid,
+        "n_total_only": n_total_only,
+        "n_no_output": n_no_output,
+        "n_gold_invalid": n_gold_invalid,
     }
 
 
@@ -116,8 +139,13 @@ def main() -> None:
         row = {
             "system": name,
             "n_total": result["n_total"],
-            "n_scored": result["n_total"] - result["n_coverage_gap"],
-            "coverage_gap": result["n_coverage_gap"],
+            "n_scored_all_fields": result["n_total"]
+            - result["n_total_only"]
+            - result["n_no_output"]
+            - result["n_gold_invalid"],
+            "n_total_field_only": result["n_total_only"],
+            "n_no_output": result["n_no_output"],
+            "n_gold_invalid": result["n_gold_invalid"],
             "overall_precision": round(report.overall.precision, 3),
             "overall_recall": round(report.overall.recall, 3),
             "overall_f1": round(report.overall.f1, 3),
@@ -129,7 +157,9 @@ def main() -> None:
             row[f"{field}_f1"] = round(prf1.f1, 3)
         rows.append(row)
 
-    csv_path = RESULTS / "phase8_sroie_table.csv"
+    # _v2 (D-038): the original phase8_sroie_table.* stays on record as the superseded
+    # version, same convention as D-014/D-022/D-037.
+    csv_path = RESULTS / "phase8_sroie_table_v2.csv"
     header = list(rows[0])
     with csv_path.open("w", newline="") as f:
         import csv as csv_module
@@ -140,7 +170,7 @@ def main() -> None:
 
     lines = ["| " + " | ".join(header) + " |", "|" + "---|" * len(header)]
     lines += ["| " + " | ".join(str(r[h]) for h in header) + " |" for r in rows]
-    md_path = RESULTS / "phase8_sroie_table.md"
+    md_path = RESULTS / "phase8_sroie_table_v2.md"
     md_path.write_text("\n".join(lines) + "\n")
     print("\n".join(lines))
     print(f"wrote {csv_path} and {md_path}")

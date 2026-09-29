@@ -1,5 +1,8 @@
 # Phase 8 — the managed-baseline comparison (SROIE)
 
+> **Superseded by `phase8_writeup_v2.md` (D-038).** The "exact tie" below was partly a date-scoring
+> artifact, and DI's 21 "misses" mix three causes. Kept unchanged as the record of what was first found.
+
 **Setup.** SROIE's 347-receipt test split, scored on the 4 fields Document Intelligence's
 prebuilt-receipt model actually returns: `company`, `address`, `date`, `total`. Both systems
 run single-shot (no repair loop, no retry-into-a-different-answer) — DI has no equivalent to

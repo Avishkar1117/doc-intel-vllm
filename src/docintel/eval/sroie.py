@@ -141,11 +141,18 @@ _DATE_FORMATS = (
 )
 
 
+# The model often appends the print time ("15/01/2019 11:05:16 AM") while gold carries
+# the date alone. The calendar date is still right, so scoring compares dates, not whole
+# strings (D-038). Applied to gold and predicted alike, since this parser serves both.
+_TRAILING_TIME_RE = re.compile(r"[\s,T]+\d{1,2}:\d{2}(:\d{2})?\s*([AaPp][Mm])?\s*$")
+
+
 def _parse_sroie_date(raw: str) -> date | None:
     """Tries each known SROIE date shape in turn; None if none match."""
+    cleaned = _TRAILING_TIME_RE.sub("", raw).strip()
     for fmt in _DATE_FORMATS:
         try:
-            return datetime.strptime(raw.strip(), fmt).date()
+            return datetime.strptime(cleaned, fmt).date()
         except ValueError:
             continue
     return None
