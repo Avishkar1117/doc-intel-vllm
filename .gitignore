@@ -9,6 +9,9 @@ __pycache__/
 # CORD/SROIE datasets: large, public, and re-downloadable - not original work.
 data/
 
+# Demo sample bundle (SROIE images + saved answers): uploaded to private Blob, not the repo.
+demo_samples/
+
 # Secrets and machine-specific overrides. Real config comes from env vars / Azure
 # Key Vault (Phase 7), never a committed file.
 .env
