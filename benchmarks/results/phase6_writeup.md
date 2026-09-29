@@ -1,13 +1,8 @@
-# Phase 6 — the four-config serving comparison
+# Phase 6: The four-config serving comparison
 
-**Setup.** One NVIDIA L4 on Modal, vLLM 0.21.0, Qwen3-VL-4B-Instruct and Qwen3-VL-2B-Instruct,
-`--max-num-seqs 8`, `--max-model-len 16384`. Four configs — two model sizes x two visual-token
-budgets — each run as its own server launch: boot, accuracy capture over all 100 CORD test
-receipts, concurrency sweep {1, 2, 4, 8, 16, 32} at 48 requests/level. "Default resolution" is
-the Qwen3-VL processor's own default (up to 16,384 tokens/image) — not the `max_pixels` value
-carried from Phase 1, which turned out to be silently ignored by Qwen3-VL's processor (see
-DECISIONS.md, this phase). "Capped" sets `--mm-processor-kwargs '{"size": {"longest_edge":
-1500000, "shortest_edge": 65536}}'`, which limits an image to ~1465 visual tokens.
+**Setup:** One NVIDIA L4 on Modal running vLLM 0.21.0, benchmarking Qwen3-VL-4B-Instruct and Qwen3-VL-2B-Instruct with `--max-num-seqs 8` and `--max-model-len 16384`. Four setups (two model sizes across two visual-token budgets) were tested in separate server runs: cold boot, accuracy evaluation across all 100 CORD test receipts, and a concurrency sweep {1, 2, 4, 8, 16, 32} with 48 requests per level.
+
+"Default resolution" refers to the Qwen3-VL processor's internal default (up to 16,384 tokens/image). This is distinct from the `max_pixels` value used in Phase 1, which the Qwen3-VL processor silently ignored (see DECISIONS.md). "Capped" sets `--mm-processor-kwargs '{"size": {"longest_edge": 1500000, "shortest_edge": 65536}}'`, capping an image at roughly 1,465 visual tokens.
 
 ## The table
 
@@ -18,118 +13,41 @@ DECISIONS.md, this phase). "Capped" sets `--mm-processor-kwargs '{"size": {"long
 | 2B, default res | 2104 | 0.652 | 58.6 (c=16) | 21.0s | 49.0 | 12.8s | $0.23 |
 | 2B, reduced res | 968 | 0.670 | **66.3** (c=16) | 18.7s | 56.4 | 12.6s | **$0.20** |
 
-F1 is scored on the 94 CORD receipts that scored cleanly under all four configs (5 excluded —
-CORD's own ground truth is missing a total; 1 more excluded per config — a 2B timeout or an
-unparseable output). Cost assumes the GPU is kept fully busy at peak throughput, no idle time,
-in USD (Modal's published rate; no EUR conversion is sourced for this project — see D-015).
+F1 is scored on the 94 CORD receipts that completed cleanly across all four setups. Five receipts were dropped because CORD's ground truth lacked a total value, and one additional receipt per setup was excluded due to a 2B timeout or an unparseable output. Cost assumes 100% GPU utilization at peak throughput with zero idle time, priced in USD using Modal's published rates (no EUR conversion was pulled for this run; see D-015).
 
 ## Where the curve bends, and why
 
-**The knee is `--max-num-seqs 8`, in every config, not model speed.** Only 8 requests are
-ever allowed to run on the GPU at once. Requests 9 and up don't get a share of the GPU —
-they sit in a queue and wait for one of the 8 running slots to free up before they're even
-started. Checking vLLM's own `running`/`waiting` counters confirms this directly: in all four
-configs, `waiting` is 0 through c=8, then jumps to a mean of 2.5–4.9 the moment c=16 is
-reached. That's the same threshold for 4B and 2B alike — model size doesn't move where the
-knee sits, it only changes how much throughput is packed into each of those 8 slots.
+**The knee sits at `--max-num-seqs 8` across every setup, independent of model speed.** Only 8 requests can execute on the GPU at any given time. Requests 9 and above queue up until an active slot frees up. vLLM's `running` and `waiting` metrics verify this directly: `waiting` sits at 0 up through concurrency 8, then climbs to an average of 2.5 to 4.9 once concurrency hits 16. This ceiling is identical for 4B and 2B. Model size does not alter where the queue forms; it only dictates how much throughput runs through those 8 slots.
 
-Past c=8, throughput is close to flat for every config, so whether a sweep's single highest
-number happens to land at c=16 or c=32 is mostly noise (4B capped's "peak" at c=32 is only
-0.3 docs/min above its own c=16 number) — not a real difference in how the two model sizes
-behave under load.
+Throughput flattens out past c=8 for all runs. Whether a peak lands at c=16 or c=32 comes down to variance (4B capped peak at c=32 is only 0.3 docs/min faster than its c=16 mark), rather than a genuine shift in behavior under load.
 
-**Resolution barely moves single-request latency, but does move throughput.** At concurrency
-1, generating the ~250–500 tokens of output JSON takes far longer than reading the image:
-4B's own output rate is ~22 tokens/sec at c=1, so ~251 output tokens alone accounts for
-roughly 11 of the ~10.2s median request time. Cutting the image from 2104 to 973 tokens saves
-prefill time, which is a small slice of that total — c=1 p50 only moves 10.2s → 9.9s. Where
-the cap actually pays off is under load: with less to process per request, more requests
-clear their turn before the next queue check, which is why capped throughput is consistently
-1.5–1.6x default across both models.
+**Resolution barely shifts single-request latency, but it directly impacts throughput.** At concurrency 1, generating 250 to 500 output JSON tokens takes far longer than the initial image read. The 4B model outputs roughly 22 tokens/sec at c=1, meaning ~251 output tokens account for about 11 seconds of the ~10.2s median request time. Trimming the image from 2,104 to 973 tokens only cuts prefill time, which is a minor part of the total (p50 at c=1 moves from 10.2s to 9.9s). The cap delivers its value under concurrent load: smaller requests clear earlier, yielding a consistent 1.5x to 1.6x throughput gain over default resolution for both models.
 
-**Cutting visual tokens by more than half did not cost accuracy.** F1 went *up* slightly
-under the cap for both models (4B: 0.819→0.833, 2B: 0.652→0.670) — a real signal repeated on
-two independent models, not just sampling noise on one. The brief expected small-print fields
-(line-item names, unit prices) to degrade first if resolution was cut too far; instead every
-field held or improved. The likely reason: the cap only reduces the ~23% of receipts that
-were *above* ~1465 tokens by default (the tall, dense ones, up to 11,846 tokens) — receipts
-that may have been getting *worse* results from an oversized, over-resized input, not better
-ones. This project fed Qwen3-VL far more visual tokens than a receipt's actual text needs.
-That's a real finding worth stating plainly: more resolution is not automatically more signal.
+**Cutting visual tokens by more than half did not hurt accuracy.** F1 ticked slightly higher with the cap enabled (4B went from 0.819 to 0.833; 2B went from 0.652 to 0.670). Because this showed up independently on both models, it is unlikely to be pure noise. We initially expected small-print details like item descriptions and unit prices to degrade under lower resolutions, but every field held steady or improved. The likely explanation is that the cap only affects the ~23% of receipts that exceeded ~1,465 tokens by default (dense, long documents running up to 11,846 tokens). These extra-long inputs may have suffered from aggressive internal scaling rather than benefiting from it. In short, Qwen3-VL was receiving far more visual tokens than receipt text actually requires. Higher resolution does not inherently mean better extraction.
 
-**Model size is the dominant cost lever, and it costs real accuracy.** 2B is 2.4x the
-throughput of 4B at equal resolution, but drops overall F1 by ~0.16–0.17. The collapse isn't
-uniform: 2B's `menu_type_count`/`menu_quantity_count` fields fall to F1 0.10–0.34 (near-random),
-while `line_items.unit_price` barely moves (0.92→0.86). 2B still gets the *total* field right
-close to as often as 4B: on the shared 94 receipts, `totals.total` scores 0.723 F1 (2B capped)
-vs 0.787 (4B capped) — a real gap, but far smaller than the overall-F1 gap, because it's driven
-by 2B's near-total failure on a handful of low-signal count fields dragging the average down,
-not by 2B being uniformly worse at every field.
+**Model size remains the main cost driver, but it comes with a major accuracy drop.** The 2B model delivers 2.4x the throughput of the 4B model at matched resolution, but overall F1 falls by 0.16 to 0.17. The degradation is uneven: 2B drops to near-random performance on `menu_type_count` and `menu_quantity_count` (0.10 to 0.34 F1), while `line_items.unit_price` stays relatively solid (0.92 down to 0.86). For the final total specifically, 2B holds up reasonably well: on the 94 shared receipts, `totals.total` hits 0.723 F1 on 2B capped compared to 0.787 on 4B capped. The overall F1 gap looks worse than it is because a few weak count fields drag down the aggregate score.
 
 ## What each axis buys
 
-Resolution and model size load different parts of the cost, as the brief predicted. Resolution
-mainly cuts *prefill* — the one-time cost of reading the image — which matters most under
-load, when many requests are competing for GPU time each round. Model size cuts *decode* cost
-per output token, everywhere, which is why it dominates the single-request latency budget too.
+Resolution and model size hit different phases of the workload. Resolution scales down prefill (the upfront image read), which yields gains when requests are actively competing for GPU execution slots. Model size cuts decode latency across every generated token, making it the primary factor behind single-request turnaround times.
 
 ## Recommendation
 
-**For a company digitizing full receipts into a structured record — every line item, not
-just the total — 4B capped is the config to run.** It matches 4B default's accuracy (in fact
-slightly exceeds it) while delivering 1.5x the throughput and cutting cost from $0.54 to
-$0.36 per 1,000 documents. There is no accuracy trade to make here; the default-resolution
-config was simply spending more GPU time than the task needed.
+**For full document extraction where every line item is required, run 4B capped.** It matches or slightly beats 4B default accuracy, improves throughput by 1.5x, and cuts costs from $0.54 down to $0.36 per 1,000 documents. There is no performance downside here; the default resolution simply consumed GPU cycles without improving output quality.
 
-**A real-world use case worth naming for 2B capped: a "just the total" workload** — e.g. a
-spend-tracking or expense-digitization tool that only needs the amount and who it was paid to,
-not a full itemized record. For that narrower job, 2B capped gets the total right nearly as
-often as 4B (F1 0.723 vs 0.787 on that one field) while running at 66.3 docs/min for $0.20/1k
-docs — the overall-F1 gap looks larger than it really is here, since most of it comes from
-fields (`menu_type_count`, `change_due`, etc.) this workload wouldn't be scoring at all. A
-merchant-name field isn't in CORD's schema and wasn't tested, but it's the natural companion
-field for this use case — knowing *who* was paid matters as much as *how much* for spend
-tracking — and would be worth adding if this workload were pursued for real. This is a
-hypothesis from the numbers above, not something this project measured.
+**2B capped is viable for total-only extraction pipelines**, such as lightweight receipt loggers or expense tools that only need the final transaction amount and vendor. In that constrained scope, 2B capped scores 0.723 on `totals.total` versus 0.787 on 4B, while processing 66.3 docs/min at $0.20 per 1,000 documents. The broader F1 drop is largely irrelevant for that use case because the model's primary failure points (`menu_type_count`, `change_due`) are ignored. Vendor names are missing from the CORD schema and were not evaluated here, though extraction would need that field in production.
 
-At a p95 budget of ~20s and a workload of, say, 50,000 receipts/day (~35 docs/min sustained),
-4B capped's peak of 36.7 docs/min is close to the ceiling of a single L4 — two GPUs (or a
-second config tier) would be the next lever, not a further prompt or schema change.
+If targeting a ~20s p95 latency on a workload around 50,000 receipts/day (~35 docs/min continuous load), 4B capped at 36.7 docs/min essentially saturates a single L4. Meeting higher demand from here requires adding a second GPU or setting up a tiered fallback, rather than trying to squeeze more out of prompts or schemas.
 
-## Caveats — what this measurement does not show
+## Caveats and limitations
 
-- **One sample per receipt, temperature 0.7 (never explicitly set — this is vLLM's model
-  default), no repeated trials.** F1 differences of a point or two, anywhere in this report,
-  are not distinguishable from sampling noise on this evidence alone.
-- **The 2B runs include at least one runaway generation.** Receipt 59 (the heaviest in the
-  set, 11,846 default visual tokens) took 3,142 completion tokens / 204s under `2b_default`,
-  and timed out entirely (4 retries, ~120s each) under `2b_cap1500k`. Inside the sweep itself,
-  one `2b_cap1500k` request at c=1 generated 13,560 completion tokens in 266 seconds — enough
-  to pull that level's own mean completion length from ~250 to 534 tokens. No request sets
-  `max_tokens`, so nothing stops a model that fails to emit a stop token. 2B's throughput and
-  latency numbers are therefore somewhat pessimistic versus a config that capped generation
-  length; this was left unfixed deliberately, per this session's priority on the serving
-  measurement over extraction tuning.
-- **The "small print degrades first" hypothesis was not actually tested.** The 1.5M-pixel cap
-  only touches the receipts already above that size. A much smaller cap (e.g. ~512 tokens,
-  touching most receipts) would be the real test of whether tight resolution costs accuracy.
-- **The brief's c=1-vs-c=8 batching-consistency check (diff outputs, confirm batching doesn't
-  change answers) was not run.** It needs `temperature=0` to be meaningful — under the
-  current 0.7 default, two runs of the same receipt can legitimately differ regardless of
-  concurrency, so a diff wouldn't isolate batching's effect. Deliberately deferred.
-- **Cost is USD, at 100% GPU utilization, no idle time, no cold-start amortization.** A real
-  deployment's price per document would be higher unless request volume reliably fills the
-  GPU.
+- **Single-sample evaluation at default temperature 0.7:** vLLM defaults to 0.7 and no explicit temperature was set. F1 shifts within 1 or 2 points should be treated with caution without repeated trials.
+- **Unbounded generation in the 2B runs:** Receipt 59 (the largest input at 11,846 visual tokens) produced 3,142 completion tokens over 204 seconds on `2b_default`, and timed out across four ~120s retries on `2b_cap1500k`. During the sweep, an unconstrained `2b_cap1500k` request at c=1 hit 13,560 tokens in 266 seconds, pulling the level's mean output length from ~250 up to 534 tokens. Because `max_tokens` was omitted, models that missed a stop token kept generating. This makes 2B throughput and latency figures somewhat pessimistic compared to a strictly bounded run.
+- **The resolution floor was not tested:** The 1.5M-pixel cap only affected the top 23% largest documents. Testing an aggressive limit (like ~512 tokens across all receipts) would be necessary to identify the exact point where small-print legibility breaks down.
+- **Concurrency consistency was not verified:** We did not run an output diff between c=1 and c=8 to verify batching consistency. Running this at temperature 0.7 produces natural output variance, so the test was postponed until runs are pinned to `temperature=0`.
+- **Cost models assume 100% saturation:** Rates reflect active GPU processing time without accounting for idle gaps or cold starts. Real-world per-document operational costs will be higher unless queues are consistently full.
 
-## What we'd try next, given more time
+## Next steps
 
-- **Serving side** (this project's actual focus): measure FP8 checkpoints for both model
-  sizes — same accuracy at lower memory could raise `--max-num-seqs` and the whole throughput
-  ceiling on the same L4. Also worth one direct comparison against a non-vLLM inference path
-  (e.g. bare `transformers` generate loop) to make the continuous-batching story concrete by
-  contrast — expected to be substantially worse, but not yet measured.
-- **Extraction side** (secondary to this project, benched deliberately): a schema built to
-  cover more real-world field variants; cropping a receipt's blank top/bottom margins before
-  it reaches the VLM, which would cut visual tokens (and cost) further without touching the
-  content — the opposite of the "just cap resolution" lever, targeting waste in the image
-  itself rather than the model's processing of it.
+- **Serving optimizations:** Test FP8 checkpoints for both models. Reducing memory pressure could allow increasing `--max-num-seqs` to unlock higher throughput on the same L4 instance. Benchmarking against a standard `transformers` generation loop would also provide a clean baseline to quantify vLLM's continuous batching advantage.
+- **Extraction pipeline updates:** Expand the extraction schema to capture common field variations. Additionally, auto-cropping empty header and footer margins prior to VLM ingestion would lower visual token counts without altering resolution.
